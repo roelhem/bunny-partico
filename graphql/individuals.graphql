@@ -1,0 +1,209 @@
+type Individual @node(model: "App\\Models\\Individuals@getKey") {
+    id: ID! @globalId
+    title: String
+    name_parts: NameParts
+    name: String @method(name:"name")
+    nickname: String
+    birth_date: Date
+    """
+    Returns the day when this person turns the given age.
+    """
+    birthday(
+        """
+        The age that you want to know.
+
+        When this value is omitted, the next birthday of this person is returned.
+        """
+        age: Int = null
+    ): Date @method(name: "resolveBirthDayField")
+    """
+    Returns the age of this person.
+    """
+    age(
+        """
+        The date at which you want to know the age of this person.
+
+        When this value is ommitted, the current date will be used instead.
+        """
+        at: Date = null
+    ): Int  @method(name: "resolveAgeField")
+    email_address: EmailAddress @hasOne(relation: "emailAddress")
+    email_addresses: [EmailAddress] @hasMany(relation: "emailAddresses")
+    postal_address: PostalAddress @hasOne(relation: "postalAddress")
+    postal_addresses: [PostalAddress] @hasMany(relation: "postalAddresses")
+    phone_number: PhoneNumber @hasOne(relation: "phoneNumber")
+    phone_numbers: [PhoneNumber] @hasMany(relation: "phoneNumbers")
+    created_at: DateTime
+    updated_at: DateTime
+    created_by: User @belongsTo(relation: "creator")
+    updated_by: User @belongsTo(relation: "editor")
+}
+
+type EmailAddress @node(model: "App\\Models\\EmailAddress@getKey") {
+    id: ID! @globalId
+    index: Int
+    label: String
+    remarks: String
+    email_address: Email
+    with_name: String
+    link: URL
+    created_at: DateTime
+    updated_at: DateTime
+    created_by: User @belongsTo(relation: "creator")
+    updated_by: User @belongsTo(relation: "editor")
+}
+
+type PostalAddress @node(model: "App\\Models\\PostalAddress@getKey") {
+    id: ID! @globalId
+    index: Int
+    label: String
+    country: String
+    country_code: CountryCode
+    administrative_area: String
+    locality: String
+    dependent_locality: String
+    postal_code: String
+    sorting_code: String
+    address_line_1: String
+    address_line_2: String
+    organisation: String
+    locale: Locale
+    remarks: String
+    """
+    A string that displays the address according to the rules of the region of the address.
+    """
+    format(
+        """
+        Set this argument to `true` to return the formatted address with HTML-tags.
+        """
+        html: Boolean = false,
+        """
+        The locale in which the address should be formatted.
+        """
+        locale: Locale = "nl_NL"
+    ): String @method(name: "resolveFormatField")
+    """
+    Returns a label that should be written on the envelope when you want to send something tho this address.
+    """
+    postal_label(
+        """
+        The country from which you send the letter.
+        """
+        origin_country: CountryCode = "NL"
+    ): String @method(name: "resolvePostalLabelField")
+    created_at: DateTime
+    updated_at: DateTime
+    created_by: User @belongsTo(relation: "creator")
+    updated_by: User @belongsTo(relation: "editor")
+}
+
+enum PhoneNumberType {
+    FIXED_LINE @enum(value: 0)
+    MOBILE @enum(value: 1)
+    FIXED_LINE_OR_MOBILE @enum(value: 2)
+    TOLL_FREE @enum(value: 3)
+    PREMIUM_RATE @enum(value: 4)
+    SHARED_COST @enum(value: 5)
+    VOIP @enum(value: 6)
+    PERSONAL_NUMBER @enum(value: 7)
+    PAGER @enum(value: 8)
+    UAN @enum(value: 9)
+    UNKNOWN @enum(value: 10)
+    EMERGENCY @enum(value: 27)
+    VOICEMAIL @enum(value: 28)
+    SHORT_CODE @enum(value: 29)
+    STANDARD_RATE @enum(value: 30)
+}
+
+enum PhoneNumberFormat {
+    E164 @enum(value: 0)
+    INTERNATIONAL @enum(value: 1)
+    NATIONAL @enum(value: 2)
+    RFC3966 @enum(value: 3)
+    FOR_FIXED @enum(value: 4)
+    FOR_MOBILE @enum(value: 5)
+    FOR_MOBILE_COMPACT @enum(value: 6)
+}
+
+"""
+The type `PhoneNumber` represents a phone-number that can be represented in several
+different formats. Furthermore, it is possible to retrieve some extra information about
+the phone number based on patterns in the phone-number itself.
+"""
+type PhoneNumber @node(model: "App\\Models\\PhoneNumber@getKey") {
+    id: ID! @globalId
+    index: Int
+    label: String
+    country: String
+    country_code: CountryCode
+    """
+    The type of this `PhoneNumber`. This value is determined based on the patterns in the phone-number itself.
+    """
+    number_type: PhoneNumberType
+    """
+    'A `String`-representation of the `PhoneNumber` in this field.
+    """
+    number(
+        """
+        Optional argument that can be used to set the format in which you want to represent the `PhoneNumber`.
+        """
+        format: PhoneNumberFormat = FOR_MOBILE
+        """
+        The code of a region. The phone number will be formatted to enable calls from the specified region.
+        """
+        from: CountryCode = "NL"
+    ): String @method(name: "resolveNumberAttribute")
+    """
+    Returns a string that can be used as a link on mobile phones. When clicked on this linked, the phone-number of
+    the current object will be called by the user.
+    """
+    link: URL
+    """
+    An approximation for where the `PhoneNumber` is located. This value will be determined based on the patterns in
+    the phone-number itself.
+    """
+    location(
+        """
+        The locale in which to display the location of this PhoneNumber
+        """
+        locale: Locale = "nl_NL"
+    ): String
+}
+
+"""
+Object representing the name of a person.
+"""
+type NameParts {
+    """
+    The full name when it differs from a standard format.
+    """
+    full: String
+    """
+    The initails of an individual.
+    """
+    initials: String
+    """
+    The prefix of a name.
+    """
+    prefix: String
+    """
+    The first name.
+    """
+    first: String
+    """
+    The middle name.
+    """
+    middle: String
+    """
+    The last name/family name.
+    """
+    last: String
+    """
+    The suffix of the name.
+    """
+    suffix: String
+}
+
+extend type Query {
+    individuals: [Individual!] @paginate(type: "connection")
+}

@@ -1,0 +1,12 @@
+{
+  "extensions": {
+    "endpoints": {
+      "Default (http://partico.test/graphql)": {
+        "url": "http://partico.test/graphql",
+        "headers": {
+          "user-agent": "JS GraphQL"
+        }
+      }
+    }
+  }
+}

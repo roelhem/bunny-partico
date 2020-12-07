@@ -1,0 +1,52 @@
+"A date string with format `Y-m-d`, e.g. `2011-05-23`."
+scalar Date @scalar(class: "Nuwave\\Lighthouse\\Schema\\Types\\Scalars\\Date")
+
+"A datetime string with format `Y-m-d H:i:s`, e.g. `2018-05-23 13:43:32`."
+scalar DateTime @scalar(class: "Nuwave\\Lighthouse\\Schema\\Types\\Scalars\\DateTime")
+
+"""
+The `CountryCode` scalar type represents a string that contains a CountryCode.
+
+This type is mainly used to easily identify countries in inputs from users or other applications.
+
+When sending an input to a `CountryCode`-argument, it will be read **case-insensively**."
+"""
+scalar CountryCode
+
+"""
+The `Locale` scalar type represents language and/or localisation setting-groups. It's value
+is a short string.
+"""
+scalar Locale
+
+"""
+The `Email` scalar type represents an e-mail address only (without names, brackets, etc.).
+It will guarantee that the string-value will be a well-formatted E-mail adress.
+"""
+scalar Email @scalar(class: "MLL\\GraphQLScalars\\Email")
+
+"""
+The `URL` scalar-type represents a valid URL-string that can be used to point to other
+data-pieces outside of the GraphQL-schema. This type is used to guarantee that a string
+value has the right format to link to 'websites', 'images', 'e-mail addresses', etc.
+
+Furthermore, values of this type should *only be used to link, but never to identify*
+thinks they link to or the objects that refer to those thinks. (The only exception is the
+usage of a callback-URL in the OAuth2 protocol.)
+"""
+scalar URL
+
+"""
+Main entry point of the graph for retrieving data.
+"""
+type Query {
+    """
+    Get the current user
+    """
+    me: User @auth
+}
+
+#import ./users.graphql
+#import ./passport.graphql
+#import ./teams.graphql
+#import ./individuals.graphql

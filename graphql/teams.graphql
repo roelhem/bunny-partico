@@ -1,0 +1,14 @@
+type Team {
+    id: ID! @globalId
+    name: String
+    created_at: DateTime
+    updated_at: DateTime
+    owner: User
+}
+
+extend type Query {
+    """
+    Shows all teams of users.
+    """
+    teams: [Team!] @paginate(type: "connection")
+}

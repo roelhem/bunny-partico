@@ -1,0 +1,27 @@
+## PASSPORT
+
+type OAuthClient {
+    id: ID!
+    name: String
+    redirect: String
+    scopes: [String]
+    """
+    Whether or not this OAuthClient is revoked
+    """
+    revoked: Boolean
+    """
+    Gives the owner of this OAuth Client.
+    """
+    owner: User @belongsTo(relation: "user")
+}
+
+extend type Query {
+    """
+    Returns a list of registered OAuth Clients.
+    """
+    oauthClients: [OAuthClient!] @paginate(
+        type: "connection",
+        model: "Laravel\\Passport\\Client",
+        defaultCount: 10
+    )
+}

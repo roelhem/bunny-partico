@@ -1,0 +1,26 @@
+## User
+
+type User @node(resolver: "App\\Models\\User@getKey") {
+    id: ID! @globalId
+    name: String
+    email: String
+    profile_photo_path: String
+    currentTeam: Team @belongsTo
+    ownedTeams: [Team!] @hasMany(type: "connection")
+    memberships: [Team!] @belongsToMany(type: "connection", relation: "teams")
+    ownedClients: [OAuthClient] @hasMany(type: "connection", relation: "clients")
+    individual: Individual @belongsTo
+    created_at: DateTime
+    updated_at: DateTime
+}
+
+extend type Query {
+    """
+    Lists all users.
+    """
+    users: [User!] @paginate(type: "connection")
+    """
+    Find a user by ID.
+    """
+    user(id: ID @eq): User @find
+}
