@@ -15,7 +15,7 @@ class CreatePostalAddressTable extends Migration
     {
         Schema::create('postal_addresses', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('individual_id')->constrained('individuals')
+            $table->foreignId('contact_id')->constrained('contacts')
                 ->onUpdate('cascade')
                 ->onDelete('cascade');
 

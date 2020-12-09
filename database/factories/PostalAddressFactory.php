@@ -2,7 +2,7 @@
 
 namespace Database\Factories;
 
-use App\Models\Individual;
+use App\Models\Contact;
 use App\Models\PostalAddress;
 use CommerceGuys\Addressing\AddressFormat\AddressField;
 use CommerceGuys\Addressing\AddressFormat\AddressFormatRepositoryInterface;
@@ -42,12 +42,12 @@ class PostalAddressFactory extends Factory
 
 
         $res = [
-            'individual_id' => function() {
-                $person = Individual::query()->inRandomOrder()->first();
-                if($person instanceof Individual) {
-                    return $person->id;
+            'contact_id' => function() {
+                $contact = Contact::query()->inRandomOrder()->first();
+                if($contact instanceof Contact) {
+                    return $contact->id;
                 } else {
-                    return Individual::factory()->create()->id;
+                    return Contact::factory()->create()->id;
                 }
             },
             'label' => $this->faker->word,

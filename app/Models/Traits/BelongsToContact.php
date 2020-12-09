@@ -4,18 +4,18 @@
 namespace App\Models\Traits;
 
 
-use App\Models\Individual;
+use App\Models\Contact;
 use Illuminate\Database\Eloquent\Builder;
 
 /**
  * Trait BelongsToIndividual
  *
- * @property-read Individual $individual
+ * @property-read Contact $contact
  */
-trait BelongsToIndividual
+trait BelongsToContact
 {
 
-    public static $individualKey = 'individual_id';
+    public static $contactKey = 'contact_id';
 
     // ---------------------------------------------------------------------------------------------------------- //
     // ----- RELATIONAL DEFINITIONS ----------------------------------------------------------------------------- //
@@ -26,8 +26,8 @@ trait BelongsToIndividual
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function individual() {
-        return $this->belongsTo(Individual::class, static::$individualKey);
+    public function contact() {
+        return $this->belongsTo(Contact::class, static::$contactKey);
     }
 
     // ---------------------------------------------------------------------------------------------------------- //
@@ -40,7 +40,7 @@ trait BelongsToIndividual
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
     public function owner() {
-        return $this->belongsTo(Individual::class, static::$individualKey);
+        return $this->belongsTo(Contact::class, static::$contactKey);
     }
 
     /**
@@ -48,7 +48,7 @@ trait BelongsToIndividual
      */
     public function getOwner()
     {
-        return $this->individual;
+        return $this->contact;
     }
 
     /**
@@ -56,17 +56,17 @@ trait BelongsToIndividual
      */
     public function getOwnerId()
     {
-        return $this->{static::$individualKey};
+        return $this->{static::$contactKey};
     }
 
     /**
      * Scope that filters only the objects that are owned by the Person with the provided id.
      *
      * @param Builder $query
-     * @param integer $individual_id
+     * @param integer $contact_id
      * @return Builder
      */
-    public function scopeOwnedBy($query, $individual_id) {
-        return $query->where(static::$individualKey, '=', $individual_id);
+    public function scopeOwnedBy($query, $contact_id) {
+        return $query->where(static::$contactKey, '=', $contact_id);
     }
 }

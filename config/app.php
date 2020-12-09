@@ -80,7 +80,7 @@ return [
     |
     */
 
-    'locale' => 'en',
+    'locale' => 'nl',
 
     /*
     |--------------------------------------------------------------------------
@@ -165,6 +165,7 @@ return [
         /*
          * Package Service Providers...
          */
+        App\Providers\PassportServiceProvider::class,
 
         /*
          * Application Service Providers...
@@ -177,7 +178,9 @@ return [
         App\Providers\FortifyServiceProvider::class,
         App\Providers\JetstreamServiceProvider::class,
 
+        App\Providers\StaticDataServiceProvider::class,
         App\Providers\AddressingServiceProvider::class,
+        App\Providers\PhoneNumberServiceProvider::class,
 
     ],
 
@@ -231,7 +234,8 @@ return [
         'Validator' => Illuminate\Support\Facades\Validator::class,
         'View' => Illuminate\Support\Facades\View::class,
 
-        'Parse' => \App\Services\Parsers\Parse::class
+        'Parse' => \App\Services\Parsers\Parse::class,
+        'StaticData' => \App\Services\StaticData\StaticDataFacade::class
 
     ],
 

@@ -2,7 +2,7 @@
 
 namespace App\Models;
 
-use App\Models\Traits\BelongsToIndividual;
+use App\Models\Traits\BelongsToContact;
 use App\Models\Traits\HasCountryCode;
 use App\Models\Traits\OrderableWithIndex;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -11,15 +11,20 @@ use libphonenumber\geocoding\PhoneNumberOfflineGeocoder;
 use Wildside\Userstamps\Userstamps;
 use libphonenumber\PhoneNumber as PhoneNumberHelper;
 use libphonenumber\PhoneNumberFormat;
-use libphonenumber\PhoneNumberType;
 use libphonenumber\PhoneNumberUtil;
 
+/**
+ * Class PhoneNumber
+ * @property PhoneNumberHelper $phone_number
+ * @property string $raw
+ * @package App\Models
+ */
 class PhoneNumber extends Model
 {
     use Userstamps;
     use HasFactory;
 
-    use BelongsToIndividual;
+    use BelongsToContact;
     use HasCountryCode, OrderableWithIndex;
 
     // ---------------------------------------------------------------------------------------------------------- //
@@ -99,9 +104,12 @@ class PhoneNumber extends Model
         return $this->util->formatNumberForMobileDialing($this->phone_number, $country_code, $numFormatting);
     }
 
-    public function location($locale = 'nl_NL') {
+    public function location(?string $locale = null) {
+        if($locale === null) {
+            $locale = config('app.locale');
+        }
         $geocoder = resolve(PhoneNumberOfflineGeocoder::class);
-        return $geocoder->getDescriptionForNumber($this->phone_number, 'nl_NL');
+        return $geocoder->getDescriptionForNumber($this->phone_number, $locale);
     }
 
     // ---------------------------------------------------------------------------------------------------------- //
@@ -128,6 +136,14 @@ class PhoneNumber extends Model
         return $this->util->getNumberType($this->phone_number);
     }
 
+    public function getExtensionAttribute() {
+        return $this->phone_number->getExtension();
+    }
+
+    public function getRawAttribute() {
+        return $this->phone_number->getRawInput();
+    }
+
     public function getLinkAttribute() {
         $res =  $this->format(PhoneNumberFormat::RFC3966);
         return str_replace('tel:', 'tel://', $res);
@@ -150,7 +166,7 @@ class PhoneNumber extends Model
             case 4: return $this->formatFor($args['from']);
             case 5: return $this->formatMobile($args['from'], true);
             case 6: return $this->formatMobile($args['from'], false);
-            default: return $this->format(2);
+            default: return $this->raw;
         }
     }
 

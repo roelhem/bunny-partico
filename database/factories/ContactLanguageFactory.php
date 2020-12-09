@@ -2,18 +2,19 @@
 
 namespace Database\Factories;
 
-use App\Models\EmailAddress;
+use App\Models\ContactLanguage;
 use App\Models\Contact;
+use CommerceGuys\Intl\Language\LanguageRepositoryInterface;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
-class EmailAddressFactory extends Factory
+class ContactLanguageFactory extends Factory
 {
     /**
      * The name of the factory's corresponding model.
      *
      * @var string
      */
-    protected $model = EmailAddress::class;
+    protected $model = ContactLanguage::class;
 
     /**
      * Define the model's default state.
@@ -32,7 +33,11 @@ class EmailAddressFactory extends Factory
                 }
             },
             'label' => $this->faker->word,
-            'email_address' => $this->faker->safeEmail,
+            'language_code' => function() {
+                $repository = resolve(LanguageRepositoryInterface::class);
+                $keys = array_keys($repository->getList());
+                return $this->faker->randomElement($keys);
+            },
             'remarks' => 'Gegenereerd door een factory.'
         ];
     }

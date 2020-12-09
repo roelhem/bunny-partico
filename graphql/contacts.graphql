@@ -1,4 +1,4 @@
-type Individual @node(model: "App\\Models\\Individuals@getKey") {
+type Contact @node {
     id: ID! @globalId
     title: String
     name_parts: NameParts
@@ -33,13 +33,18 @@ type Individual @node(model: "App\\Models\\Individuals@getKey") {
     postal_addresses: [PostalAddress] @hasMany(relation: "postalAddresses")
     phone_number: PhoneNumber @hasOne(relation: "phoneNumber")
     phone_numbers: [PhoneNumber] @hasMany(relation: "phoneNumbers")
+    language: ContactLanguage @hasOne(relation: "language")
+    languages: [ContactLanguage] @hasMany(relation: "languages")
+    relations: [ContactRelation] @hasMany(relation: "relations")
+    related: [Contact] @belongsToMany(relation: "related", type: "connection", edgeType: "RelatedContactEdge")
+    relatesTo: [Contact] @belongsToMany(relation: "relatesTo", type: "connection", edgeType: "RelatesToContactEdge")
     created_at: DateTime
     updated_at: DateTime
     created_by: User @belongsTo(relation: "creator")
     updated_by: User @belongsTo(relation: "editor")
 }
 
-type EmailAddress @node(model: "App\\Models\\EmailAddress@getKey") {
+type EmailAddress @node {
     id: ID! @globalId
     index: Int
     label: String
@@ -53,12 +58,11 @@ type EmailAddress @node(model: "App\\Models\\EmailAddress@getKey") {
     updated_by: User @belongsTo(relation: "editor")
 }
 
-type PostalAddress @node(model: "App\\Models\\PostalAddress@getKey") {
+type PostalAddress @node {
     id: ID! @globalId
     index: Int
     label: String
-    country: String
-    country_code: CountryCode
+    country: Country
     administrative_area: String
     locality: String
     dependent_locality: String
@@ -97,45 +101,16 @@ type PostalAddress @node(model: "App\\Models\\PostalAddress@getKey") {
     updated_by: User @belongsTo(relation: "editor")
 }
 
-enum PhoneNumberType {
-    FIXED_LINE @enum(value: 0)
-    MOBILE @enum(value: 1)
-    FIXED_LINE_OR_MOBILE @enum(value: 2)
-    TOLL_FREE @enum(value: 3)
-    PREMIUM_RATE @enum(value: 4)
-    SHARED_COST @enum(value: 5)
-    VOIP @enum(value: 6)
-    PERSONAL_NUMBER @enum(value: 7)
-    PAGER @enum(value: 8)
-    UAN @enum(value: 9)
-    UNKNOWN @enum(value: 10)
-    EMERGENCY @enum(value: 27)
-    VOICEMAIL @enum(value: 28)
-    SHORT_CODE @enum(value: 29)
-    STANDARD_RATE @enum(value: 30)
-}
-
-enum PhoneNumberFormat {
-    E164 @enum(value: 0)
-    INTERNATIONAL @enum(value: 1)
-    NATIONAL @enum(value: 2)
-    RFC3966 @enum(value: 3)
-    FOR_FIXED @enum(value: 4)
-    FOR_MOBILE @enum(value: 5)
-    FOR_MOBILE_COMPACT @enum(value: 6)
-}
-
 """
 The type `PhoneNumber` represents a phone-number that can be represented in several
 different formats. Furthermore, it is possible to retrieve some extra information about
 the phone number based on patterns in the phone-number itself.
 """
-type PhoneNumber @node(model: "App\\Models\\PhoneNumber@getKey") {
+type PhoneNumber @node {
     id: ID! @globalId
     index: Int
     label: String
-    country: String
-    country_code: CountryCode
+    country: Country
     """
     The type of this `PhoneNumber`. This value is determined based on the patterns in the phone-number itself.
     """
@@ -154,6 +129,10 @@ type PhoneNumber @node(model: "App\\Models\\PhoneNumber@getKey") {
         from: CountryCode = "NL"
     ): String @method(name: "resolveNumberAttribute")
     """
+    Returns the extension of the number.
+    """
+    extension: String
+    """
     Returns a string that can be used as a link on mobile phones. When clicked on this linked, the phone-number of
     the current object will be called by the user.
     """
@@ -166,8 +145,50 @@ type PhoneNumber @node(model: "App\\Models\\PhoneNumber@getKey") {
         """
         The locale in which to display the location of this PhoneNumber
         """
-        locale: Locale = "nl_NL"
-    ): String
+        locale: Locale = null
+    ): String @method(name: "resolveLocationAttribute")
+}
+
+type ContactLanguage @node {
+    id: ID! @globalId
+    index: Int
+    label: String
+    language: Language
+    created_at: DateTime
+    updated_at: DateTime
+    created_by: User @belongsTo(relation: "creator")
+    updated_by: User @belongsTo(relation: "editor")
+}
+
+type ContactRelation @node {
+    id: ID! @globalId
+    index: Int
+    label: String
+    related: Contact @belongsTo(relation: "related")
+    created_at: DateTime
+    updated_at: DateTime
+    created_by: User @belongsTo(relation: "creator")
+    updated_by: User @belongsTo(relation: "editor")
+}
+
+type RelatedContactEdge {
+    node: Contact
+    cursor: String!
+    label: String
+    created_at: DateTime
+    updated_at: DateTime
+    created_by: User @belongsTo(relation: "creator")
+    updated_by: User @belongsTo(relation: "editor")
+}
+
+type RelatesToContactEdge {
+    node: Contact
+    cursor: String!
+    label: String
+    created_at: DateTime
+    updated_at: DateTime
+    created_by: User @belongsTo(relation: "creator")
+    updated_by: User @belongsTo(relation: "editor")
 }
 
 """
@@ -205,5 +226,5 @@ type NameParts {
 }
 
 extend type Query {
-    individuals: [Individual!] @paginate(type: "connection")
+    contacts: [Contact!] @paginate(type: "connection")
 }

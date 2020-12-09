@@ -79,10 +79,10 @@ trait AddressingAttributeMappings
      */
     public function getGivenName()
     {
-        if($this->individual === null) {
+        if($this->contact === null) {
             return null;
         }
-        return $this->individual->name_first;
+        return $this->contact->name_first;
     }
 
     /**
@@ -90,10 +90,10 @@ trait AddressingAttributeMappings
      */
     public function getAdditionalName()
     {
-        if($this->individual === null) {
+        if($this->contact === null) {
             return null;
         }
-        return $this->individual->name_prefix;
+        return $this->contact->name_prefix;
     }
 
     /**
@@ -101,10 +101,10 @@ trait AddressingAttributeMappings
      */
     public function getFamilyName()
     {
-        if($this->individual === null) {
+        if($this->contact === null) {
             return null;
         }
-        return $this->individual->name_last;
+        return $this->contact->name_last;
     }
 
     /**

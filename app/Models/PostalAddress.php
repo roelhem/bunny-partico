@@ -5,7 +5,7 @@ namespace App\Models;
 
 
 use App\Models\Traits\AddressingAttributeMappings;
-use App\Models\Traits\BelongsToIndividual;
+use App\Models\Traits\BelongsToContact;
 use App\Models\Traits\HasCountryCode;
 use App\Models\Traits\OrderableWithIndex;
 use CommerceGuys\Addressing\AddressFormat\AddressFormat;
@@ -22,7 +22,7 @@ class PostalAddress extends Model implements AddressInterface
     use HasFactory;
     use Userstamps;
 
-    use HasCountryCode, AddressingAttributeMappings, OrderableWithIndex, BelongsToIndividual;
+    use HasCountryCode, AddressingAttributeMappings, OrderableWithIndex, BelongsToContact;
 
     // ---------------------------------------------------------------------------------------------------------- //
     // ----- MODEL CONFIGURATION -------------------------------------------------------------------------------- //
@@ -30,7 +30,7 @@ class PostalAddress extends Model implements AddressInterface
 
     protected $table = 'postal_addresses';
 
-    protected $fillable = ['individual_id','label',
+    protected $fillable = ['contact_id','label',
         'country_code','administrative_area','locality','dependent_locality','postal_code',
         'sorting_code','address_line_1','address_line_2','organisation','locale',
         'options','remarks'];

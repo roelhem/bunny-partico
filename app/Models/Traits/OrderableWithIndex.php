@@ -9,7 +9,7 @@ namespace App\Models\Traits;
 trait OrderableWithIndex
 {
 
-    public static $ownerKey = 'individual_id';
+    public static $ownerKey = 'contact_id';
 
     /**
      * Defines some event handlers.

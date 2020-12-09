@@ -4,6 +4,12 @@ scalar Date @scalar(class: "Nuwave\\Lighthouse\\Schema\\Types\\Scalars\\Date")
 "A datetime string with format `Y-m-d H:i:s`, e.g. `2018-05-23 13:43:32`."
 scalar DateTime @scalar(class: "Nuwave\\Lighthouse\\Schema\\Types\\Scalars\\DateTime")
 
+"A datetime and timezone string in ISO 8601 format `Y-m-dTH:i:sP`, e.g. `2020-04-20T13:53:12+02:00`."
+scalar DateTimeTz @scalar(class: "Nuwave\\Lighthouse\\Schema\\Types\\Scalars\\DateTimeTz")
+
+"A datetime string in ISO 8601 format in UTC with nanoseconds `YYYY-MM-DDTHH:mm:ss.SSSSSSZ`, e.g. `2020-04-20T16:20:04.000000Z`."
+scalar DateTimeUtc @scalar(class: "Nuwave\\Lighthouse\\Schema\\Types\\Scalars\\DateTimeUtc")
+
 """
 The `CountryCode` scalar type represents a string that contains a CountryCode.
 
@@ -18,6 +24,12 @@ The `Locale` scalar type represents language and/or localisation setting-groups.
 is a short string.
 """
 scalar Locale
+
+"""
+The `Locale` scalar type represents language and/or localisation setting-groups. It's value
+is a short string.
+"""
+scalar Regex
 
 """
 The `Email` scalar type represents an e-mail address only (without names, brackets, etc.).
@@ -46,7 +58,8 @@ type Query {
     me: User @auth
 }
 
+#import ./static-data.graphql
 #import ./users.graphql
 #import ./passport.graphql
 #import ./teams.graphql
-#import ./individuals.graphql
+#import ./contacts.graphql

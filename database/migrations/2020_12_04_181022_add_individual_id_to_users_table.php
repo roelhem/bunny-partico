@@ -14,8 +14,8 @@ class AddIndividualIdToUsersTable extends Migration
     public function up()
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->foreignId('individual_id')->nullable()
-                ->constrained('individuals')
+            $table->foreignId('contact_id')->nullable()
+                ->constrained('contacts')
                 ->onDelete('set null');
         });
     }
@@ -28,7 +28,7 @@ class AddIndividualIdToUsersTable extends Migration
     public function down()
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->dropConstrainedForeignId('individual_id');
+            $table->dropConstrainedForeignId('contact_id');
         });
     }
 }

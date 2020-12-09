@@ -2,7 +2,7 @@
 
 namespace Database\Factories;
 
-use App\Models\Individual;
+use App\Models\Contact;
 use App\Models\PhoneNumber;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use libphonenumber\PhoneNumberFormat;
@@ -26,12 +26,12 @@ class PhoneNumberFactory extends Factory
     public function definition()
     {
         return [
-            'individual_id' => function() {
-                $individual = Individual::query()->inRandomOrder()->first();
-                if($individual instanceof Individual) {
-                    return $individual->id;
+            'contact_id' => function() {
+                $contact = Contact::query()->inRandomOrder()->first();
+                if($contact instanceof Contact) {
+                    return $contact->id;
                 } else {
-                    return Individual::factory()->create()->id;
+                    return Contact::factory()->create()->id;
                 }
             },
             'label' => $this->faker->word,

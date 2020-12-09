@@ -2,7 +2,8 @@
 
 namespace App\Models;
 
-use App\Models\Traits\HasGlobalId;
+use App\Services\OpenID\HasClaims;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -11,11 +12,22 @@ use Laravel\Fortify\TwoFactorAuthenticatable;
 use Laravel\Jetstream\HasProfilePhoto;
 use Laravel\Jetstream\HasTeams;
 use Laravel\Passport\HasApiTokens;
+use libphonenumber\PhoneNumberFormat;
 
+/**
+ * Class User
+ * @property string $name
+ * @property Carbon $created_at
+ * @property Carbon $updated_at
+ * @property string $email
+ * @property string
+ * @property-read Contact $contact
+ * @package App\Models
+ */
 class User extends Authenticatable
 {
-    use HasGlobalId;
     use HasApiTokens;
+    use HasClaims;
     use HasFactory;
     use HasProfilePhoto;
     use HasTeams;
@@ -61,8 +73,66 @@ class User extends Authenticatable
         'profile_photo_url',
     ];
 
-    public function individual(): BelongsTo
+    // ---------------------------------------------------------------------------------------------------------- //
+    // ----- CLAIMS --------------------------------------------------------------------------------------------- //
+    // ---------------------------------------------------------------------------------------------------------- //
+
+    public function getProfileClaim()
     {
-        return $this->belongsTo(Individual::class);
+        $result = [
+            'preferred_username' => $this->name,
+        ];
+        if($this->contact) {
+            $result['name'] = $this->contact->name;
+            $result['family_name'] = $this->contact->name_last;
+            $result['given_name'] = $this->contact->name_first;
+            $result['middle_name'] = $this->contact->name_middle;
+            $result['nickname'] = $this->contact->nickname;
+            $result['birth_date'] = $this->contact->birth_date->toISOString();
+            $result['updated_at'] = $this->contact->updated_at->toISOString();
+        } else {
+            $result['name'] = $this->name;
+            $result['updated_at'] = $this->updated_at->toISOString();
+        }
+        return $result;
+    }
+
+    public function getEmailClaim()
+    {
+        return [
+            'email' => $this->email,
+            'email_verified' => $this->hasVerifiedEmail(),
+        ];
+    }
+
+    public function getAddressClaim()
+    {
+        if($this->contact && $this->contact->postalAddress) {
+            return [
+                'postal_address' => $this->contact->postalAddress->format()
+            ];
+        } else {
+            return [];
+        }
+    }
+
+    public function getPhoneClaim()
+    {
+        if($this->contact && $this->contact->phoneNumber) {
+            return [
+                'phone_number' => $this->contact->phoneNumber->format(PhoneNumberFormat::E164),
+            ];
+        } else {
+            return [];
+        }
+    }
+
+    // ---------------------------------------------------------------------------------------------------------- //
+    // ----- CONTACTS ------------------------------------------------------------------------------------------- //
+    // ---------------------------------------------------------------------------------------------------------- //
+
+    public function contact(): BelongsTo
+    {
+        return $this->belongsTo(Contact::class);
     }
 }

@@ -3,9 +3,13 @@
 
 namespace App\Models\Traits;
 
-use CommerceGuys\Addressing\Country\CountryRepositoryInterface;
 
-
+/**
+ * Trait HasCountryCode
+ * @package App\Models\Traits
+ *
+ * @property-read string $country_code
+ */
 trait HasCountryCode
 {
     /**
@@ -31,11 +35,9 @@ trait HasCountryCode
     /**
      * Returns the full, Dutch name of the country.
      *
-     * @return mixed
+     * @return \CommerceGuys\Addressing\Country\Country|null
      */
     public function getCountryAttribute() {
-        $code = $this->country_code;
-        $list = app(CountryRepositoryInterface::class)->getList('NL');
-        return \Arr::get($list, $code);
+        return \StaticData::getCountry($this->country_code);
     }
 }

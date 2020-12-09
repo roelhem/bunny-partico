@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Wildside\Userstamps\Userstamps;
 
-class EmailAddress extends Model
+class ContactLanguage extends Model
 {
     use HasFactory;
     use Userstamps;
@@ -19,34 +19,29 @@ class EmailAddress extends Model
     // ----- MODEL CONFIGURATION -------------------------------------------------------------------------------- //
     // ---------------------------------------------------------------------------------------------------------- //
 
-    protected $table = 'email_addresses';
+    protected $table = 'contact_languages';
 
-    protected $fillable = ['label','email_address','options','remarks'];
+    protected $fillable = ['label','language_code','options','remarks'];
 
     // ---------------------------------------------------------------------------------------------------------- //
     // ----- MAGIC METHODS -------------------------------------------------------------------------------------- //
     // ---------------------------------------------------------------------------------------------------------- //
 
     /**
-     * Returns the email_address as a string.
+     * Returns the language as a string.
      *
      * @return string
      */
     public function __toString()
     {
-        return $this->email_address ?? '(onbekend)';
+        return $this->language_code ?? '(onbekend)';
     }
 
     // ---------------------------------------------------------------------------------------------------------- //
     // ----- CUSTOM ACCESSORS ----------------------------------------------------------------------------------- //
     // ---------------------------------------------------------------------------------------------------------- //
 
-    public function getWithNameAttribute() {
-        return trim($this->contact->name) . ' <' . trim($this->email_address) . '>';
+    public function getLanguageAttribute() {
+        return \StaticData::getLanguage($this->language_code);
     }
-
-    public function getLinkAttribute() {
-        return 'mailto:'.urlencode($this->contact->name.' ') . '<'.trim($this->email_address).'>';
-    }
-
 }

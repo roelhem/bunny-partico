@@ -5,10 +5,10 @@ namespace App\Models;
 use App\Models\Traits\BelongsToContact;
 use App\Models\Traits\OrderableWithIndex;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\Pivot;
 use Wildside\Userstamps\Userstamps;
 
-class EmailAddress extends Model
+class ContactRelation extends Pivot
 {
     use HasFactory;
     use Userstamps;
@@ -16,37 +16,28 @@ class EmailAddress extends Model
     use BelongsToContact, OrderableWithIndex;
 
     // ---------------------------------------------------------------------------------------------------------- //
-    // ----- MODEL CONFIGURATION -------------------------------------------------------------------------------- //
+    // ----- CONTACT SETUP -------------------------------------------------------------------------------------- //
     // ---------------------------------------------------------------------------------------------------------- //
 
-    protected $table = 'email_addresses';
+    public $incrementing = true;
 
-    protected $fillable = ['label','email_address','options','remarks'];
+    public $table = 'contact_relations';
 
     // ---------------------------------------------------------------------------------------------------------- //
-    // ----- MAGIC METHODS -------------------------------------------------------------------------------------- //
+    // ----- METHODS -------------------------------------------------------------------------------------------- //
     // ---------------------------------------------------------------------------------------------------------- //
 
-    /**
-     * Returns the email_address as a string.
-     *
-     * @return string
-     */
-    public function __toString()
+    public function self()
     {
-        return $this->email_address ?? '(onbekend)';
+        return $this;
     }
 
     // ---------------------------------------------------------------------------------------------------------- //
-    // ----- CUSTOM ACCESSORS ----------------------------------------------------------------------------------- //
+    // ----- RELATIONS ------------------------------------------------------------------------------------------ //
     // ---------------------------------------------------------------------------------------------------------- //
 
-    public function getWithNameAttribute() {
-        return trim($this->contact->name) . ' <' . trim($this->email_address) . '>';
+    public function related()
+    {
+        return $this->belongsTo(Contact::class, 'related_contact_id');
     }
-
-    public function getLinkAttribute() {
-        return 'mailto:'.urlencode($this->contact->name.' ') . '<'.trim($this->email_address).'>';
-    }
-
 }

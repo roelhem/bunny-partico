@@ -1,0 +1,160 @@
+interface HasLocale {
+    locale: Locale @method(name: "getLocale")
+}
+
+type Country {
+    name(
+        """
+        The locale in which you want to display the name of this country.
+        """
+        locale: Locale = null
+    ): String @field(resolver: "App\\GraphQL\\Types\\CountryType@resolveName")
+    code: CountryCode @field(resolver: "App\\GraphQL\\Types\\CountryType@resolveCountryCode")
+    three_letter_code: String @field(resolver: "App\\GraphQL\\Types\\CountryType@resolveThreeLetterCode")
+    numeric_code: String @field(resolver: "App\\GraphQL\\Types\\CountryType@resolveNumericCode")
+    currency_code: String @field(resolver: "App\\GraphQL\\Types\\CountryType@resolveCurrencyCode")
+    address_format: AddressFormat @field(resolver: "App\\GraphQL\\Types\\CountryType@resolveAddressFormat")
+    phone_number_meta: PhoneNumberMeta @field(resolver: "App\\GraphQL\\Types\\CountryType@resolvePhoneNumberFormat")
+}
+
+type AddressFormat {
+    country: Country @method(name: "getCountryCode")
+    format: String @method(name: "getFormat")
+    local_format: String @method(name: "getLocalFormat")
+    used_fields: [String!] @method(name: "getUsedFields")
+    required_fields: [String!] @method(name: "getRequiredFields")
+    uppercase_fields: [String!] @method(name: "getUppercaseFields")
+    used_subdivisions: [String!] @method(name: "getUsedSubdivisionFields")
+    administrative_area_type: String @method(name: "getAdministrativeAreaType")
+    locality_type: String @method(name: "getLocalityType")
+    dependent_locality_type: String @method(name: "getDependentLocalityType")
+    postal_code_type: String @method(name: "getPostalCodeType")
+    postal_code_pattern: String @method(name: "getPostalCodePattern")
+    postal_code_prefix: String @method(name: "getPostalCodePrefix")
+    subdivision_depth: String @method(name: "getSubdivisionDepth")
+}
+
+enum PhoneNumberFormat {
+    E164 @enum(value: 0)
+    INTERNATIONAL @enum(value: 1)
+    NATIONAL @enum(value: 2)
+    RFC3966 @enum(value: 3)
+    FOR_FIXED @enum(value: 4)
+    FOR_MOBILE @enum(value: 5)
+    FOR_MOBILE_COMPACT @enum(value: 6)
+    RAW @enum(value: 7)
+}
+
+enum PhoneNumberType {
+    FIXED_LINE @enum(value: 0)
+    MOBILE @enum(value: 1)
+    FIXED_LINE_OR_MOBILE @enum(value: 2)
+    TOLL_FREE @enum(value: 3)
+    PREMIUM_RATE @enum(value: 4)
+    SHARED_COST @enum(value: 5)
+    VOIP @enum(value: 6)
+    PERSONAL_NUMBER @enum(value: 7)
+    PAGER @enum(value: 8)
+    UAN @enum(value: 9)
+    UNKNOWN @enum(value: 10)
+    EMERGENCY @enum(value: 27)
+    VOICEMAIL @enum(value: 28)
+    SHORT_CODE @enum(value: 29)
+    STANDARD_RATE @enum(value: 30)
+}
+
+type PhoneNumberMeta {
+    country: Country @method(name: "getId")
+    general: PhoneNumberDescription @method(name: "getGeneralDesc")
+    fixed_line: PhoneNumberDescription @method(name: "getFixedLine")
+    mobile: PhoneNumberDescription @method(name: "getMobile")
+    toll_free: PhoneNumberDescription @method(name: "getTollFree")
+    premium_rate: PhoneNumberDescription @method(name: "getPremiumRate")
+    shared_cost: PhoneNumberDescription @method(name: "getSharedCost")
+    personal_number: PhoneNumberDescription @method(name: "getPersonalNumber")
+    voip: PhoneNumberDescription @method(name: "getVoip")
+    pager: PhoneNumberDescription @method(name: "getPager")
+    uan: PhoneNumberDescription @method(name: "getUan")
+    emergency: PhoneNumberDescription @method(name: "getEmergency")
+    voicemail: PhoneNumberDescription @method(name: "getVoicemail")
+    short_code: PhoneNumberDescription @method(name: "getShortCode")
+    standard_rate: PhoneNumberDescription @method(name: "getStandardRate")
+    carrier_specific: PhoneNumberDescription @method(name: "getCarrierSpecific")
+    sms_service: PhoneNumberDescription @method(name: "getSmsService")
+    no_international_dialling: PhoneNumberDescription @method(name: "getNoInternationalDialling")
+    country_calling_code: Int @method(name: "getCountryCode")
+    international_prefix: String @method(name: "getInternationalPrefix")
+    preferred_international_prefix: String @method(name: "getPreferredInternationalPrefix")
+    national_prefix: String @method(name: "getNationalPrefix")
+    national_prefix_for_parsing: Regex @method(name: "getNationalPrefixForParsing")
+    national_prefix_transform_rule: String @method(name: "getNationalPrefixTransformRule")
+    same_mobile_and_fixed_line_pattern: Boolean @method(name: "getSameMobileAndFixedLinePattern")
+    preferred_external_prefix: String @method(name: "getPreferredExtnPrefix")
+    main_for_country_calling_code: Boolean! @method(name: "getMainCountryForCode")
+    number_formats: [PhoneNumberFormatDescription!]! @method(name: "numberFormats")
+    international_number_formats: [PhoneNumberFormatDescription!]! @method(name: "intlNumberFormats")
+    leading_digits: Regex @method(name: "getLeadingDigits")
+    leading_zero_possible: Boolean @method(name: "isLeadingZeroPossible")
+    is_mobile_number_portable_region: Boolean @method(name: "isMobileNumberPortableRegion")
+}
+
+type PhoneNumberDescription {
+    """
+    An array containing the possible amount of numbers that the phone number can have.
+    """
+    possible_length: [Int]! @method(name: "getPossibleLength")
+    """
+    An array containing the possible amount of numbers that the phone number can have when it is
+    only called in a local area.
+    """
+    possible_length_local: [Int]! @method(name: "getPossibleLengthLocalOnly")
+    national_number_pattern: String @method(name: "getNationalNumberPattern")
+    example_number: String @method(name: "getExampleNumber")
+}
+
+type PhoneNumberFormatDescription {
+    """
+    A Regex match for a phone number, containing groups that will be formatted by the formatter pattern.
+    """
+    pattern: Regex @method(name: "getPattern")
+    """
+    The way the matched groups from the `pattern` object should be reformatted.
+    """
+    format: String @method(name: "getFormat")
+    """
+    The Regex pattern that should match with the leading digits of the phone number to make this format
+    available.
+    """
+    leading_digit_patterns: [Regex] @method(name: "leadingDigitPatterns")
+    national_prefix_rule: String @method(name: "getNationalPrefixFormattingRule")
+    """
+    Returns if the national prefix can be left out.
+    """
+    national_prefix_optional: Boolean @method(name: "getNationalPrefixOptionalWhenFormatting")
+    domestic_carrier_code: String @method(name: "getDomesticCarrierCodeFormattingRule")
+}
+
+type Language implements HasLocale {
+    name(
+        """
+        The locale in which you want to display the name of this country.
+        """
+        locale: Locale = null
+    ): String @field(resolver: "App\\GraphQL\\Types\\LanguageType@resolveName")
+    code: Locale @field(resolver: "App\\GraphQL\\Types\\LanguageType@resolveCode")
+}
+
+extend type Query {
+    countries(
+        """
+        The locale in which you want to see the country name.
+        """
+        locale: Locale = null
+    ): [Country!]!
+    languages(
+        """
+        The locale in which you want to see the language name.
+        """
+        locale: Locale = null
+    ): [Language!]!
+}

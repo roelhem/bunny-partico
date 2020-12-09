@@ -10,6 +10,7 @@
     "require": {
         "php": "^7.3",
         "commerceguys/addressing": "^1.1",
+        "commerceguys/intl": "^1.0",
         "fideloper/proxy": "^4.4",
         "fruitcake/laravel-cors": "^2.0",
         "giggsey/libphonenumber-for-php": "^8.12",
@@ -41,7 +42,9 @@
     },
     "extra": {
         "laravel": {
-            "dont-discover": []
+            "dont-discover": [
+                "laravel/passport"
+            ]
         }
     },
     "autoload": {

@@ -15,7 +15,7 @@ class CreatePhoneNumbersTable extends Migration
     {
         Schema::create('phone_numbers', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('individual_id')->constrained('individuals')
+            $table->foreignId('contact_id')->constrained('contacts')
                 ->onUpdate('cascade')
                 ->onDelete('cascade');
 
