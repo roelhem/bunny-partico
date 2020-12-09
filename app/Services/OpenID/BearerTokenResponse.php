@@ -48,7 +48,7 @@ class BearerTokenResponse extends \League\OAuth2\Server\ResponseTypes\BearerToke
             return $key->getIdentifier();
         }, $this->accessToken->getScopes());
 
-        foreach ($user->getClaims($this->accessToken->getScopes()) as $claimName => $claimValue) {
+        foreach ($user->getClaims($scopes) as $claimName => $claimValue) {
             $builder = $builder->withClaim($claimName, $claimValue);
         }
 
