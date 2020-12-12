@@ -4,7 +4,7 @@ type Group @node {
     description: String
     remarks: String
     category: GroupCategory @belongsTo(relation: "category")
-    contacts: [Contact!] @belongsToMany(relation: "contacts", type: "connection", scopes: ["withViewAccess"])
+    contacts: [Contact!] @belongsToMany(relation: "contacts", type: "connection", scopes: ["withViewAccess"], edgeType: "GroupContactEdge")
     created_at: DateTime
     updated_at: DateTime
     created_by: User @belongsTo(relation: "creator")
@@ -23,8 +23,22 @@ type GroupCategory @node {
     updated_by: User @belongsTo(relation: "editor")
 }
 
+type GroupContactEdge {
+    node: Contact
+    cursor: String!
+    created_at: DateTime
+    updated_at: DateTime
+}
+
+type ContactGroupEdge {
+    node: Group
+    cursor: String!
+    created_at: DateTime
+    updated_at: DateTime
+}
+
 extend type Contact {
-    groups: [Group] @belongsToMany(relation: "groups", type: "connection")
+    groups: [Group] @belongsToMany(relation: "groups", type: "connection", edgeType: "ContactGroupEdge")
 }
 
 extend type Query {
