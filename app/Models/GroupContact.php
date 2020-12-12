@@ -4,16 +4,20 @@
 namespace App\Models;
 
 
+use App\Contracts\OwnedByContact;
+use App\Models\Traits\BelongsToContact;
 use App\Models\Traits\Teamstamps;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\Pivot;
 use Wildside\Userstamps\Userstamps;
 
-class GroupContact extends Pivot
+class GroupContact extends Pivot implements OwnedByContact
 {
     use HasFactory;
     use Userstamps;
     use Teamstamps;
+
+    use BelongsToContact;
 
     // ---------------------------------------------------------------------------------------------------------- //
     // ----- RELATIONS ------------------------------------------------------------------------------------------ //
@@ -22,10 +26,5 @@ class GroupContact extends Pivot
     public function group()
     {
         $this->belongsTo(Group::class, 'group_id');
-    }
-
-    public function contact()
-    {
-        $this->belongsTo(Contact::class, 'contact_id');
     }
 }

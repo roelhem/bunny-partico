@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use App\Contracts\OwnedByContact;
+use App\Models\Traits\BelongsToContact;
 use App\Services\OpenID\HasClaims;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -64,7 +66,7 @@ use libphonenumber\PhoneNumberFormat;
  * @method static \Illuminate\Database\Eloquent\Builder|User whereUpdatedAt($value)
  * @mixin \Eloquent
  */
-class User extends Authenticatable
+class User extends Authenticatable implements OwnedByContact
 {
     use HasApiTokens;
     use HasClaims;
@@ -73,6 +75,7 @@ class User extends Authenticatable
     use HasTeams;
     use Notifiable;
     use TwoFactorAuthenticatable;
+    use BelongsToContact;
 
     /**
      * The attributes that are mass assignable.

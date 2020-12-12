@@ -4,6 +4,7 @@
 namespace App\Models\Traits;
 
 
+use App\Contracts\OwnedByContact;
 use App\Models\Contact;
 use Illuminate\Database\Eloquent\Builder;
 
@@ -46,7 +47,7 @@ trait BelongsToContact
     /**
      * @inheritdoc
      */
-    public function getOwner()
+    public function getOwner(): ?Contact
     {
         return $this->contact;
     }
@@ -54,7 +55,7 @@ trait BelongsToContact
     /**
      * @inheritdoc
      */
-    public function getOwnerId()
+    public function getOwnerId(): ?int
     {
         return $this->{static::$contactKey};
     }
@@ -74,7 +75,16 @@ trait BelongsToContact
     // ----- IMPLEMENTS: AccessControl -------------------------------------------------------------------------- //
     // ---------------------------------------------------------------------------------------------------------- //
 
-    public function getSubjectId() {
-        return $this->getOwnerId();
+    /**
+     * @inheritDoc
+     */
+    public function isSubject($contactRef) {
+        if($contactRef instanceof OwnedByContact) {
+            $contactRef = $contactRef->getOwnerId();
+        }
+        if($contactRef === null) {
+            return false;
+        }
+        return $contactRef === $this->getOwnerId();
     }
 }

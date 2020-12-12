@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Contracts\AccessControl;
+use App\Contracts\OwnedByContact;
 use App\Models\Traits\BelongsToContact;
 use App\Models\Traits\HasCountryCode;
 use App\Models\Traits\HasPermissionFlags;
@@ -64,7 +65,7 @@ use libphonenumber\PhoneNumberUtil;
  * @method static \Illuminate\Database\Eloquent\Builder|PhoneNumber whereCreatedByTeam($value)
  * @method static \Illuminate\Database\Eloquent\Builder|PhoneNumber whereUpdatedByTeam($value)
  */
-class PhoneNumber extends Model implements AccessControl
+class PhoneNumber extends Model implements AccessControl, OwnedByContact
 {
     use Userstamps;
     use HasFactory;

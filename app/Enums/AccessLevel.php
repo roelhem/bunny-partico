@@ -157,8 +157,7 @@ final class AccessLevel extends Enum
             return AccessLevel::CREATOR_TEAM();
         }
 
-        $subjectId = $to->getSubjectId();
-        if($subjectId !== null && $user->contact_id === $subjectId) {
+        if($to->isSubject($user)) {
             return AccessLevel::SUBJECT();
         }
 

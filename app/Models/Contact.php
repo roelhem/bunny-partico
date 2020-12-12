@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Contracts\AccessControl;
+use App\Contracts\OwnedByContact;
 use App\Models\Traits\HasPermissionFlags;
 use App\Models\Traits\Teamstamps;
 use Illuminate\Database\Eloquent\Builder;
@@ -83,7 +84,7 @@ use Wildside\Userstamps\Userstamps;
  * @property-read \App\Models\Team|null $creatorTeam
  * @property-read \App\Models\Team|null $editorTeam
  */
-class Contact extends Model implements AccessControl
+class Contact extends Model implements AccessControl, OwnedByContact
 {
     use HasFactory;
     use Userstamps;
@@ -353,7 +354,27 @@ class Contact extends Model implements AccessControl
     // ----- IMPLEMENT: AccessControl --------------------------------------------------------------------------- //
     // ---------------------------------------------------------------------------------------------------------- //
 
-    public function getSubjectId()
+    public function isSubject($contactRef)
+    {
+        if($contactRef instanceof OwnedByContact) {
+            $contactRef = $contactRef->getOwnerId();
+        }
+        if($contactRef === null) {
+            return false;
+        }
+        return $contactRef === $this->id;
+    }
+
+    // ---------------------------------------------------------------------------------------------------------- //
+    // ----- IMPLEMENT: OwnedByContact -------------------------------------------------------------------------- //
+    // ---------------------------------------------------------------------------------------------------------- //
+
+    public function getOwner(): Contact
+    {
+        return $this;
+    }
+
+    public function getOwnerId(): int
     {
         return $this->id;
     }

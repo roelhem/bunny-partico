@@ -5,6 +5,7 @@ namespace App\Models;
 
 
 use App\Contracts\AccessControl;
+use App\Contracts\OwnedByContact;
 use App\Models\Traits\AddressingAttributeMappings;
 use App\Models\Traits\BelongsToContact;
 use App\Models\Traits\HasCountryCode;
@@ -79,7 +80,7 @@ use Wildside\Userstamps\Userstamps;
  * @method static \Illuminate\Database\Eloquent\Builder|PostalAddress whereCreatedByTeam($value)
  * @method static \Illuminate\Database\Eloquent\Builder|PostalAddress whereUpdatedByTeam($value)
  */
-class PostalAddress extends Model implements AddressInterface, AccessControl
+class PostalAddress extends Model implements AddressInterface, AccessControl, OwnedByContact
 {
     use HasFactory;
     use Userstamps;

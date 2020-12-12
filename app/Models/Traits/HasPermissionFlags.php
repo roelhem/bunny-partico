@@ -5,6 +5,7 @@ namespace App\Models\Traits;
 
 
 use App\Contracts\AccessControl;
+use App\Contracts\OwnedByContact;
 use App\Enums\AccessLevel;
 use App\Models\Contact;
 use App\Models\PermissionFlag;
@@ -114,31 +115,30 @@ trait HasPermissionFlags
      */
     public function scopeWithAccess($query, string $ability)
     {
-        // No restrictions with admin permissions.
-        if(\Auth::user()->is_admin) {
-            return $query;
-        }
-
         // Public permission
-        if(\Auth::id() === null) {
+        if(\Auth::user() === null) {
             return $query->where(function ($query) use ($ability) {
                 return $this->scopeMaxAccessLevel($query, $ability, AccessLevel::PUBLIC());
             });
         }
 
+        // No restrictions with admin permissions.
+        if(\Auth::user()->is_admin) {
+            return $query;
+        }
 
         // Creator permission.
         $query->where(function ($query) use ($ability) {
             /** @var Builder|\Illuminate\Database\Eloquent\Builder $query */
             return $query
-                ->where('created_by', \Auth::id())
+                ->where($this->getTable().'.created_by', \Auth::id())
                 ->where(function ($query) use ($ability) {
                     return $this->scopeMaxAccessLevel($query, $ability, AccessLevel::CREATOR());
                 });
         })->orWhere(function ($query) use ($ability) {
             /** @var Builder|\Illuminate\Database\Eloquent\Builder $query */
             return $query
-                ->where('created_by_team', \Auth::user()->current_team_id)
+                ->where($this->getTable().'.created_by_team', \Auth::user()->current_team_id)
                 ->where(function ($query) use ($ability) {
                     return $this->scopeMaxAccessLevel($query, $ability, AccessLevel::CREATOR_TEAM());
                 });
@@ -148,22 +148,46 @@ trait HasPermissionFlags
 
         // Select subject if connected to a contact entry.
         if(\Auth::user()->contact_id !== null) {
-            $contactKey = $this->getContactIdKey();
-
-            if($contactKey !== null && \Auth::user()->contact_id !== null) {
-                $query->orWhere(function ($query) use ($contactKey, $ability) {
-                    /** @var Builder|\Illuminate\Database\Eloquent\Builder $query */
-                    return $query
-                        ->where($contactKey, \Auth::user()->contact_id)
-                        ->where(function ($query) use ($ability) {
-                            return $this->scopeMaxAccessLevel($query, $ability, AccessLevel::SUBJECT());
-                        });
-                });
-            }
+            $query->orWhere(function ($query) use ($ability) {
+                /** @var Builder|\Illuminate\Database\Eloquent\Builder $query */
+                return $this->scopeSubject($query, \Auth::user())
+                    ->where(function ($query) use ($ability) {
+                        return $this->scopeMaxAccessLevel($query, $ability, AccessLevel::SUBJECT());
+                    });
+            });
         }
 
         // Return te query
         return $query;
+    }
+
+    /**
+     * @param Builder|\Illuminate\Database\Eloquent\Builder $query
+     * @param OwnedByContact|int|null $contactRef
+     * @return Builder|\Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeSubject($query, $contactRef)
+    {
+        // Get the contact key.
+        $contactKey = null;
+        if(isset(static::$contactKey)) {
+            $contactKey = static::$contactKey;
+        } elseif (static::class === Contact::class) {
+            $contactKey = 'id';
+        }
+
+        // Don't allow anything when no contact key was found.
+        if($contactKey === null) {
+            return $query->where('id', false);
+        }
+
+        // Get the contact reference.
+        if($contactRef instanceof OwnedByContact) {
+            $contactRef = $contactRef->getOwnerId();
+        }
+
+        // Return the result.
+        return $query->where($contactKey, $contactRef);
     }
 
     /**
@@ -175,30 +199,24 @@ trait HasPermissionFlags
         return $this->scopeWithAccess($query, 'view');
     }
 
+    /**
+     * Returns the id of the user that created this entity.
+     *
+     * @return int|null
+     */
     public function getCreatorId()
     {
         return $this->created_by;
     }
 
+    /**
+     * Returns the id of the team that created this entity.
+     *
+     * @return int|null
+     */
     public function getCreatorTeamId()
     {
         return $this->created_by_team;
-    }
-
-    /**
-     * Returns the name of the column in the table that stores the associated contact_id.
-     *
-     * @return string
-     */
-    private function getContactIdKey()
-    {
-        if(isset(static::$contactKey)) {
-            return static::$contactKey;
-        } elseif (static::class === Contact::class) {
-            return 'id';
-        } else {
-            return null;
-        }
     }
 
     /**

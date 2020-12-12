@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Contracts\AccessControl;
+use App\Contracts\OwnedByContact;
 use App\Models\Traits\BelongsToContact;
 use App\Models\Traits\HasPermissionFlags;
 use App\Models\Traits\OrderableWithIndex;
@@ -51,7 +52,7 @@ use Wildside\Userstamps\Userstamps;
  * @method static \Illuminate\Database\Eloquent\Builder|ContactLanguage whereCreatedByTeam($value)
  * @method static \Illuminate\Database\Eloquent\Builder|ContactLanguage whereUpdatedByTeam($value)
  */
-class ContactLanguage extends Model implements AccessControl
+class ContactLanguage extends Model implements AccessControl, OwnedByContact
 {
     use HasFactory;
     use Userstamps;

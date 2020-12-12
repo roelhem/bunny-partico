@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Contracts\AccessControl;
+use App\Contracts\OwnedByContact;
 use App\Models\Traits\BelongsToContact;
 use App\Models\Traits\HasPermissionFlags;
 use App\Models\Traits\OrderableWithIndex;
@@ -51,7 +52,7 @@ use Wildside\Userstamps\Userstamps;
  * @method static \Illuminate\Database\Eloquent\Builder|ContactRelation whereCreatedByTeam($value)
  * @method static \Illuminate\Database\Eloquent\Builder|ContactRelation whereUpdatedByTeam($value)
  */
-class ContactRelation extends Pivot implements AccessControl
+class ContactRelation extends Pivot implements AccessControl, OwnedByContact
 {
     use HasFactory;
     use Userstamps;
