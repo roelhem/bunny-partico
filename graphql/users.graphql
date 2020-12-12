@@ -9,7 +9,7 @@ type User @node(resolver: "App\\Models\\User@getKey") {
     ownedTeams: [Team!] @hasMany(type: "connection")
     memberships: [Team!] @belongsToMany(type: "connection", relation: "teams")
     ownedClients: [OAuthClient] @hasMany(type: "connection", relation: "clients")
-    individual: Contact @belongsTo
+    contact: Contact @belongsTo(scopes: ["withViewAccess"])
     created_at: DateTime
     updated_at: DateTime
 }

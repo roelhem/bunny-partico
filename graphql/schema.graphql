@@ -58,6 +58,7 @@ type Query {
     me: User @auth
 }
 
+#import ./permissions.graphql
 #import ./static-data.graphql
 #import ./users.graphql
 #import ./passport.graphql

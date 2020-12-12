@@ -18,12 +18,6 @@
     import AppLayout from "../../Layouts/AppLayout";
     import PassportTokenManager from "./PassportTokenManager";
     export default {
-        props: [
-            'myProp'
-        ],
-        computed: {
-            myPropType() { return typeof this.myProp }
-        },
         components: {PassportTokenManager, AppLayout}
     }
 </script>

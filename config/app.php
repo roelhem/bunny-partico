@@ -181,6 +181,7 @@ return [
         App\Providers\StaticDataServiceProvider::class,
         App\Providers\AddressingServiceProvider::class,
         App\Providers\PhoneNumberServiceProvider::class,
+        App\Providers\EnumServiceProvider::class,
 
     ],
 
@@ -234,6 +235,7 @@ return [
         'Validator' => Illuminate\Support\Facades\Validator::class,
         'View' => Illuminate\Support\Facades\View::class,
 
+        'Inertia' => \Inertia\Inertia::class,
         'Parse' => \App\Services\Parsers\Parse::class,
         'StaticData' => \App\Services\StaticData\StaticDataFacade::class
 

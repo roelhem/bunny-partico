@@ -1,0 +1,9 @@
+type PermissionFlag @node {
+    id: ID! @globalId
+    ability: String!
+    level: AccessLevel!
+    created_at: DateTime
+    updated_at: DateTime
+    created_by: User @belongsTo(relation: "creator")
+    updated_by: User @belongsTo(relation: "editor")
+}

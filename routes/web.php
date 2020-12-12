@@ -18,15 +18,20 @@ Route::get('/', function () {
 });
 
 
-Route::middleware(['verified'])->group(function () {
+// Dashboard routes.
+Route::middleware(['auth:web','verified'])->group(function () {
 
     Route::get('/dashboard', function () {
-        return Inertia\Inertia::render('Dashboard');
+        return Inertia::render('Dashboard');
     })->name('dashboard');
 
     Route::get('/clients', function () {
-        return Inertia\Inertia::render('Clients/Index', [
+        return Inertia::render('Clients/Index');
+    })->name('clients.index');
+
+    Route::get('/contacts', function () {
+        return Inertia::render('Contacts/Index', [
             'myProp' => 'Hallo!'
         ]);
-    })->name('clients.index');
+    })->name('contacts.index');
 });

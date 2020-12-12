@@ -19,7 +19,7 @@ extend type Query {
     """
     Returns a list of registered OAuth Clients.
     """
-    oauthClients: [OAuthClient!] @paginate(
+    oauthClients: [OAuthClient!] @guard @paginate(
         type: "connection",
         model: "Laravel\\Passport\\Client",
         defaultCount: 10

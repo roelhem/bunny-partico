@@ -69,4 +69,12 @@ trait BelongsToContact
     public function scopeOwnedBy($query, $contact_id) {
         return $query->where(static::$contactKey, '=', $contact_id);
     }
+
+    // ---------------------------------------------------------------------------------------------------------- //
+    // ----- IMPLEMENTS: AccessControl -------------------------------------------------------------------------- //
+    // ---------------------------------------------------------------------------------------------------------- //
+
+    public function getSubjectId() {
+        return $this->getOwnerId();
+    }
 }

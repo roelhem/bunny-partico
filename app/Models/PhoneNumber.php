@@ -2,8 +2,10 @@
 
 namespace App\Models;
 
+use App\Contracts\AccessControl;
 use App\Models\Traits\BelongsToContact;
 use App\Models\Traits\HasCountryCode;
+use App\Models\Traits\HasPermissionFlags;
 use App\Models\Traits\OrderableWithIndex;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -15,17 +17,60 @@ use libphonenumber\PhoneNumberUtil;
 
 /**
  * Class PhoneNumber
+ *
  * @property PhoneNumberHelper $phone_number
  * @property string $raw
  * @package App\Models
+ * @property int $id
+ * @property int $contact_id
+ * @property int $index
+ * @property string $label
+ * @property string $options
+ * @property string $country_code
+ * @property string|null $remarks
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property int|null $created_by
+ * @property int|null $updated_by
+ * @property-read \App\Models\Contact $contact
+ * @property-read \App\Models\User|null $creator
+ * @property-read \App\Models\User $destroyer
+ * @property-read \App\Models\User|null $editor
+ * @property-read \CommerceGuys\Addressing\Country\Country|null $country
+ * @property-read mixed $extension
+ * @property-read mixed $link
+ * @property-read mixed $location
+ * @property-read int $number_type
+ * @property-read \App\Models\Contact $owner
+ * @method static \Illuminate\Database\Eloquent\Builder|PhoneNumber newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|PhoneNumber newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|PhoneNumber ownedBy($contact_id)
+ * @method static \Illuminate\Database\Eloquent\Builder|PhoneNumber query()
+ * @method static \Illuminate\Database\Eloquent\Builder|PhoneNumber whereContactId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|PhoneNumber whereCountryCode($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|PhoneNumber whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|PhoneNumber whereCreatedBy($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|PhoneNumber whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|PhoneNumber whereIndex($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|PhoneNumber whereLabel($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|PhoneNumber whereOptions($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|PhoneNumber wherePhoneNumber($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|PhoneNumber whereRemarks($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|PhoneNumber whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|PhoneNumber whereUpdatedBy($value)
+ * @mixin \Eloquent
+ * @property int|null $created_by_team
+ * @property int|null $updated_by_team
+ * @method static \Illuminate\Database\Eloquent\Builder|PhoneNumber whereCreatedByTeam($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|PhoneNumber whereUpdatedByTeam($value)
  */
-class PhoneNumber extends Model
+class PhoneNumber extends Model implements AccessControl
 {
     use Userstamps;
     use HasFactory;
 
     use BelongsToContact;
-    use HasCountryCode, OrderableWithIndex;
+    use HasCountryCode, OrderableWithIndex, HasPermissionFlags;
 
     // ---------------------------------------------------------------------------------------------------------- //
     // ----- MODEL CONFIGURATION -------------------------------------------------------------------------------- //

@@ -1,4 +1,4 @@
-type Contact @node {
+type Contact @node @can(ability: "view") {
     id: ID! @globalId
     title: String
     name_parts: NameParts
@@ -27,21 +27,24 @@ type Contact @node {
         """
         at: Date = null
     ): Int  @method(name: "resolveAgeField")
-    email_address: EmailAddress @hasOne(relation: "emailAddress")
-    email_addresses: [EmailAddress] @hasMany(relation: "emailAddresses")
-    postal_address: PostalAddress @hasOne(relation: "postalAddress")
-    postal_addresses: [PostalAddress] @hasMany(relation: "postalAddresses")
-    phone_number: PhoneNumber @hasOne(relation: "phoneNumber")
-    phone_numbers: [PhoneNumber] @hasMany(relation: "phoneNumbers")
-    language: ContactLanguage @hasOne(relation: "language")
-    languages: [ContactLanguage] @hasMany(relation: "languages")
-    relations: [ContactRelation] @hasMany(relation: "relations")
+    email_address: EmailAddress @hasOne(relation: "emailAddress", scopes: ["withViewAccess"])
+    email_addresses: [EmailAddress] @hasMany(relation: "emailAddresses", scopes: ["withViewAccess"])
+    postal_address: PostalAddress @hasOne(relation: "postalAddress", scopes: ["withViewAccess"])
+    postal_addresses: [PostalAddress] @hasMany(relation: "postalAddresses", scopes: ["withViewAccess"])
+    phone_number: PhoneNumber @hasOne(relation: "phoneNumber", scopes: ["withViewAccess"])
+    phone_numbers: [PhoneNumber] @hasMany(relation: "phoneNumbers", scopes: ["withViewAccess"])
+    language: ContactLanguage @hasOne(relation: "language", scopes: ["withViewAccess"])
+    languages: [ContactLanguage] @hasMany(relation: "languages", scopes: ["withViewAccess"])
+    relations: [ContactRelation] @hasMany(relation: "relations", scopes: ["withViewAccess"])
     related: [Contact] @belongsToMany(relation: "related", type: "connection", edgeType: "RelatedContactEdge")
     relatesTo: [Contact] @belongsToMany(relation: "relatesTo", type: "connection", edgeType: "RelatesToContactEdge")
     created_at: DateTime
     updated_at: DateTime
     created_by: User @belongsTo(relation: "creator")
     updated_by: User @belongsTo(relation: "editor")
+    my_access_level: AccessLevel @method(name: "authAccessLevel")
+    access_level(ability: String!): AccessLevel @method(name: "getAccessLevel", passOrdered: true)
+    permission_flags: [PermissionFlag] @morphMany(relation: "permissionFlags")
 }
 
 type EmailAddress @node {
@@ -56,6 +59,9 @@ type EmailAddress @node {
     updated_at: DateTime
     created_by: User @belongsTo(relation: "creator")
     updated_by: User @belongsTo(relation: "editor")
+    my_access_level: AccessLevel @method(name: "authAccessLevel")
+    access_level(ability: String!): AccessLevel @method(name: "getAccessLevel", passOrdered: true)
+    permission_flags: [PermissionFlag] @morphMany(relation: "permissionFlags")
 }
 
 type PostalAddress @node {
@@ -99,6 +105,9 @@ type PostalAddress @node {
     updated_at: DateTime
     created_by: User @belongsTo(relation: "creator")
     updated_by: User @belongsTo(relation: "editor")
+    my_access_level: AccessLevel @method(name: "authAccessLevel")
+    access_level(ability: String!): AccessLevel @method(name: "getAccessLevel", passOrdered: true)
+    permission_flags: [PermissionFlag] @morphMany(relation: "permissionFlags")
 }
 
 """
@@ -147,6 +156,13 @@ type PhoneNumber @node {
         """
         locale: Locale = null
     ): String @method(name: "resolveLocationAttribute")
+    created_at: DateTime
+    updated_at: DateTime
+    created_by: User @belongsTo(relation: "creator")
+    updated_by: User @belongsTo(relation: "editor")
+    my_access_level: AccessLevel @method(name: "authAccessLevel")
+    access_level(ability: String!): AccessLevel @method(name: "getAccessLevel", passOrdered: true)
+    permission_flags: [PermissionFlag] @morphMany(relation: "permissionFlags")
 }
 
 type ContactLanguage @node {
@@ -158,6 +174,9 @@ type ContactLanguage @node {
     updated_at: DateTime
     created_by: User @belongsTo(relation: "creator")
     updated_by: User @belongsTo(relation: "editor")
+    my_access_level: AccessLevel @method(name: "authAccessLevel")
+    access_level(ability: String!): AccessLevel @method(name: "getAccessLevel", passOrdered: true)
+    permission_flags: [PermissionFlag] @morphMany(relation: "permissionFlags")
 }
 
 type ContactRelation @node {
@@ -169,6 +188,9 @@ type ContactRelation @node {
     updated_at: DateTime
     created_by: User @belongsTo(relation: "creator")
     updated_by: User @belongsTo(relation: "editor")
+    my_access_level: AccessLevel @method(name: "authAccessLevel")
+    access_level(ability: String!): AccessLevel @method(name: "getAccessLevel", passOrdered: true)
+    permission_flags: [PermissionFlag] @morphMany(relation: "permissionFlags")
 }
 
 type RelatedContactEdge {
@@ -226,5 +248,5 @@ type NameParts {
 }
 
 extend type Query {
-    contacts: [Contact!] @paginate(type: "connection")
+    contacts: [Contact!] @paginate(type: "connection", scopes: ["withViewAccess"])
 }
