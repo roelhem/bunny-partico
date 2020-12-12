@@ -64,3 +64,4 @@ type Query {
 #import ./passport.graphql
 #import ./teams.graphql
 #import ./contacts.graphql
+#import ./groups.graphql

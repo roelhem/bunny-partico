@@ -27,13 +27,19 @@ trait Teamstamps
     public static function registerTeamstampListeners()
     {
         static::creating(function (self $model) {
-            $currentTeamId = \Auth::user()->current_team_id;
-            $model->created_by_team = $currentTeamId;
-            $model->updated_by_team = $currentTeamId;
+            if(\Auth::user()) {
+                $currentTeamId = \Auth::user()->current_team_id;
+                $model->created_by_team = $currentTeamId;
+                $model->updated_by_team = $currentTeamId;
+            }
         });
         static::updating(function (self $model) {
-            $currentTeamId = \Auth::user()->current_team_id;
-            $model->updated_by_team = $currentTeamId;
+            if(\Auth::user()) {
+                $currentTeamId = \Auth::user()->current_team_id;
+                $model->updated_by_team = $currentTeamId;
+            } else {
+                $model->updated_by_team = null;
+            }
         });
     }
 

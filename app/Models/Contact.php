@@ -337,6 +337,18 @@ class Contact extends Model implements AccessControl
         ])->using(ContactRelation::class);
     }
 
+    public function groups()
+    {
+        return $this->belongsToMany(Group::class, 'group_contact')->withPivot(
+            'created_at',
+            'updated_at',
+            'created_by',
+            'updated_by',
+            'created_by_team',
+            'updated_by_team'
+        )->using(GroupContact::class);
+    }
+
     // ---------------------------------------------------------------------------------------------------------- //
     // ----- IMPLEMENT: AccessControl --------------------------------------------------------------------------- //
     // ---------------------------------------------------------------------------------------------------------- //

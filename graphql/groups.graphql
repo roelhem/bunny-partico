@@ -1,0 +1,33 @@
+type Group @node {
+    id: ID! @globalId
+    name: String
+    description: String
+    remarks: String
+    category: GroupCategory @belongsTo(relation: "category")
+    contacts: [Contact!] @belongsToMany(relation: "contacts", type: "connection", scopes: ["withViewAccess"])
+    created_at: DateTime
+    updated_at: DateTime
+    created_by: User @belongsTo(relation: "creator")
+    updated_by: User @belongsTo(relation: "editor")
+}
+
+type GroupCategory @node {
+    id: ID! @globalId
+    name: String
+    description: String
+    remarks: String
+    groups: Group @hasMany(relation: "groups", type: "connection")
+    created_at: DateTime
+    updated_at: DateTime
+    created_by: User @belongsTo(relation: "creator")
+    updated_by: User @belongsTo(relation: "editor")
+}
+
+extend type Contact {
+    groups: [Group] @belongsToMany(relation: "groups", type: "connection")
+}
+
+extend type Query {
+    groups: [Group!] @paginate(type: "connection")
+    group_categories: [GroupCategory] @paginate(type: "connection")
+}
