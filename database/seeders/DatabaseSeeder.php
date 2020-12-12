@@ -18,7 +18,8 @@ class DatabaseSeeder extends Seeder
         $this->createAdminUser();
 
         $this->call([
-            ContactSeeder::class
+            ContactSeeder::class,
+            UserSeeder::class,
         ]);
     }
 
@@ -33,6 +34,7 @@ class DatabaseSeeder extends Seeder
         $adminUser = User::factory([
             'name' => 'admin',
             'email' => 'admin@example.com',
+            'is_admin' => true,
         ])->createOne();
         $adminUser->ownedTeams()->save(Team::forceCreate([
             'user_id' => $adminUser->id,

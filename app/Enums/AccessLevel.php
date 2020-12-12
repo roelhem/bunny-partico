@@ -101,6 +101,11 @@ final class AccessLevel extends Enum
      */
     public function withMaxAccessLevel($query, string $ability, string $tableName, string $entityType, $defaultAccessLevel = null)
     {
+        // No filters when the access level is admin.
+        if (AccessLevel::ADMIN()->is($this)) {
+            return  $query;
+        }
+
         // Filter all entities with an access level higher than this access level for the given ability.
         $levelSubQuery = PermissionFlag::select('level')->where([
             'ability' => $ability,

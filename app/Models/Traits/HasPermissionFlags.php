@@ -36,16 +36,18 @@ trait HasPermissionFlags
      * @param string $ability
      * @return AccessLevel
      */
-    public function getDefaultPermissionLevel(string $ability)
+    public function getDefaultAccessLevel(string $ability)
     {
         $level = null;
         if(!is_array($this->defaultPermissionLevels)) {
             $level = AccessLevel::get($this->defaultPermissionLevels);
         } elseif (isset($this->defaultPermissionLevels[$ability])) {
+            \Log::info('Levels', $this->defaultPermissionLevels);
             $level = AccessLevel::get($this->defaultPermissionLevels[$ability]);
+            \Log::info('Level', ['ability' => $ability, 'level' => $level]);
         }
 
-        if($level === null) {
+        if($level !== null) {
             return $level;
         } else {
             return AccessLevel::default();
@@ -65,7 +67,7 @@ trait HasPermissionFlags
         if($flag) {
             return $flag->level;
         } else {
-            return $this->getDefaultPermissionLevel($ability);
+            return $this->getDefaultAccessLevel($ability);
         }
     }
 
@@ -101,7 +103,7 @@ trait HasPermissionFlags
     {
         return AccessLevel::get($level)->withMaxAccessLevel(
             $query, $ability, $this->getTable(), static::class,
-            $this->getDefaultPermissionLevel($ability),
+            $this->getDefaultAccessLevel($ability),
         );
     }
 
@@ -112,6 +114,11 @@ trait HasPermissionFlags
      */
     public function scopeWithAccess($query, string $ability)
     {
+        // No restrictions with admin permissions.
+        if(\Auth::user()->is_admin) {
+            return $query;
+        }
+
         // Public permission
         if(\Auth::id() === null) {
             return $query->where(function ($query) use ($ability) {
