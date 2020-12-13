@@ -1,9 +1,30 @@
-type PermissionFlag @node {
+type PermissionFlag @node @timestamps @userstamps {
     id: ID! @globalId
     ability: String!
     level: AccessLevel!
-    created_at: DateTime
-    updated_at: DateTime
-    created_by: User @belongsTo(relation: "creator")
-    updated_by: User @belongsTo(relation: "editor")
+    entity: AccessControlled @morphTo(relation: "entity", scopes: ["withViewAccess"])
+}
+
+interface AccessControlled {
+    """
+    The global ID of the Access Controlled item.
+    """
+    id: ID!
+    """
+    The access level that the user currently has on this instance.
+    """
+    my_access_level: AccessLevel
+    """
+    The minimal access level that a user need to have a certain ability.
+    """
+    access_level(
+        """
+        The ability of which you want to know the minimal access level.
+        """
+        ability: String!
+    ): AccessLevel
+    """
+    A connection to the permission flag instances that determine the minimal access levels on this instance.
+    """
+    permission_flags: [PermissionFlag]
 }

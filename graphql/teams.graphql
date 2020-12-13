@@ -1,8 +1,6 @@
-type Team {
+type Team @node @timestamps {
     id: ID! @globalId
     name: String
-    created_at: DateTime
-    updated_at: DateTime
     owner: User
 }
 

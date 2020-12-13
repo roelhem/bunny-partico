@@ -6,6 +6,10 @@
 # Add a proper definition by implementing Nuwave\Lighthouse\Support\Contracts\DefinedDirective
 directive @country
 
+# Directive class: App\GraphQL\Directives\GlobalIdRefDirective
+# Add a proper definition by implementing Nuwave\Lighthouse\Support\Contracts\DefinedDirective
+# directive @globalIdRef
+
 # Directive class: Nuwave\Lighthouse\OrderBy\OrderByDirective
 """
 Sort a result list by one or more given columns.

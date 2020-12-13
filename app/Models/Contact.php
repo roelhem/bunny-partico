@@ -308,11 +308,9 @@ class Contact extends Model implements AccessControl, OwnedByContact
             'contact_relations',
             ContactRelation::$contactKey,
             'related_contact_id',
-        )->withPivot([
+        )->withTimestamps()->withPivot([
             'id',
             'label',
-            'created_at',
-            'updated_at',
             'created_by',
             'updated_by',
             'created_by_team',
@@ -326,11 +324,9 @@ class Contact extends Model implements AccessControl, OwnedByContact
             'contact_relations',
             'related_contact_id',
             ContactRelation::$contactKey,
-        )->withPivot([
+        )->withTimestamps()->withPivot([
             'id',
             'label',
-            'created_at',
-            'updated_at',
             'created_by',
             'updated_by',
             'created_by_team',

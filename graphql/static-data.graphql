@@ -1,7 +1,3 @@
-interface HasLocale {
-    locale: Locale @method(name: "getLocale")
-}
-
 type Country {
     name(
         """
@@ -134,7 +130,7 @@ type PhoneNumberFormatDescription {
     domestic_carrier_code: String @method(name: "getDomesticCarrierCodeFormattingRule")
 }
 
-type Language implements HasLocale {
+type Language {
     name(
         """
         The locale in which you want to display the name of this country.

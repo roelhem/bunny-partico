@@ -49,6 +49,21 @@ usage of a callback-URL in the OAuth2 protocol.)
 scalar URL
 
 """
+Converts a value to the global ID that refers to a different type.
+"""
+directive @globalIdRef(
+    """
+    The name of the type to which this global ID should refer.
+    """
+    type: String!
+) on FIELD_DEFINITION
+
+directive @timestamps on OBJECT
+directive @userstamps on OBJECT
+directive @teamstamps on OBJECT
+directive @accessControl on OBJECT
+
+"""
 Main entry point of the graph for retrieving data.
 """
 type Query {
@@ -61,7 +76,6 @@ type Query {
 #import ./permissions.graphql
 #import ./static-data.graphql
 #import ./users.graphql
-#import ./passport.graphql
 #import ./teams.graphql
 #import ./contacts.graphql
 #import ./groups.graphql

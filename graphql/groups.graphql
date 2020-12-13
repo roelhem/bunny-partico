@@ -1,32 +1,20 @@
-type Group @node(resolver: "App\\Models\\Group@byIdWithAccess") {
+type Group implements AccessControlled @node(resolver: "App\\Models\\Group@byIdWithAccess")
+    @timestamps @userstamps @teamstamps @accessControl {
     id: ID! @globalId
     name: String
     description: String
     remarks: String
     category: GroupCategory @belongsTo(relation: "category", scopes: ["withViewAccess"])
     contacts: [Contact!] @belongsToMany(relation: "contacts", type: "connection", scopes: ["withViewAccess"], edgeType: "GroupContactEdge")
-    created_at: DateTime
-    updated_at: DateTime
-    created_by: User @belongsTo(relation: "creator")
-    updated_by: User @belongsTo(relation: "editor")
-    my_access_level: AccessLevel @method(name: "authAccessLevel")
-    access_level(ability: String!): AccessLevel @method(name: "getAccessLevel", passOrdered: true)
-    permission_flags: [PermissionFlag] @morphMany(relation: "permissionFlags")
 }
 
-type GroupCategory @node(resolver: "App\\Models\\GroupCategory@byIdWithAccess") {
+type GroupCategory implements AccessControlled @node(resolver: "App\\Models\\GroupCategory@byIdWithAccess")
+    @timestamps @userstamps @teamstamps @accessControl {
     id: ID! @globalId
     name: String
     description: String
     remarks: String
     groups: Group @hasMany(relation: "groups", type: "connection",  scopes: ["withViewAccess"])
-    created_at: DateTime
-    updated_at: DateTime
-    created_by: User @belongsTo(relation: "creator")
-    updated_by: User @belongsTo(relation: "editor")
-    my_access_level: AccessLevel @method(name: "authAccessLevel")
-    access_level(ability: String!): AccessLevel @method(name: "getAccessLevel", passOrdered: true)
-    permission_flags: [PermissionFlag] @morphMany(relation: "permissionFlags")
 }
 
 type GroupContactEdge {

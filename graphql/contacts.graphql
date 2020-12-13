@@ -1,4 +1,5 @@
-type Contact @node(resolver: "App\\Models\\Contact@byIdWithAccess") @can(ability: "view") {
+type Contact implements AccessControlled @node(resolver: "App\\Models\\Contact@byIdWithAccess")
+    @timestamps @userstamps @teamstamps @accessControl {
     id: ID! @globalId
     title: String
     name_parts: NameParts
@@ -38,16 +39,10 @@ type Contact @node(resolver: "App\\Models\\Contact@byIdWithAccess") @can(ability
     relations: [ContactRelation] @hasMany(relation: "relations", scopes: ["withViewAccess"])
     related: [Contact] @belongsToMany(relation: "related", type: "connection", edgeType: "RelatedContactEdge")
     relatesTo: [Contact] @belongsToMany(relation: "relatesTo", type: "connection", edgeType: "RelatesToContactEdge")
-    created_at: DateTime
-    updated_at: DateTime
-    created_by: User @belongsTo(relation: "creator")
-    updated_by: User @belongsTo(relation: "editor")
-    my_access_level: AccessLevel @method(name: "authAccessLevel")
-    access_level(ability: String!): AccessLevel @method(name: "getAccessLevel", passOrdered: true)
-    permission_flags: [PermissionFlag] @morphMany(relation: "permissionFlags")
 }
 
-type EmailAddress @node(resolver: "App\\Models\\EmailAddress@byIdWithAccess") {
+type EmailAddress implements AccessControlled @node(resolver: "App\\Models\\EmailAddress@byIdWithAccess")
+    @timestamps @userstamps @teamstamps @accessControl {
     id: ID! @globalId
     index: Int
     label: String
@@ -55,16 +50,10 @@ type EmailAddress @node(resolver: "App\\Models\\EmailAddress@byIdWithAccess") {
     email_address: Email
     with_name: String
     link: URL
-    created_at: DateTime
-    updated_at: DateTime
-    created_by: User @belongsTo(relation: "creator")
-    updated_by: User @belongsTo(relation: "editor")
-    my_access_level: AccessLevel @method(name: "authAccessLevel")
-    access_level(ability: String!): AccessLevel @method(name: "getAccessLevel", passOrdered: true)
-    permission_flags: [PermissionFlag] @morphMany(relation: "permissionFlags")
 }
 
-type PostalAddress @node(resolver: "App\\Models\\PostalAddress@byIdWithAccess") {
+type PostalAddress implements AccessControlled @node(resolver: "App\\Models\\PostalAddress@byIdWithAccess")
+    @timestamps @userstamps @teamstamps @accessControl {
     id: ID! @globalId
     index: Int
     label: String
@@ -101,13 +90,6 @@ type PostalAddress @node(resolver: "App\\Models\\PostalAddress@byIdWithAccess") 
         """
         origin_country: CountryCode = "NL"
     ): String @method(name: "resolvePostalLabelField")
-    created_at: DateTime
-    updated_at: DateTime
-    created_by: User @belongsTo(relation: "creator")
-    updated_by: User @belongsTo(relation: "editor")
-    my_access_level: AccessLevel @method(name: "authAccessLevel")
-    access_level(ability: String!): AccessLevel @method(name: "getAccessLevel", passOrdered: true)
-    permission_flags: [PermissionFlag] @morphMany(relation: "permissionFlags")
 }
 
 """
@@ -115,7 +97,8 @@ The type `PhoneNumber` represents a phone-number that can be represented in seve
 different formats. Furthermore, it is possible to retrieve some extra information about
 the phone number based on patterns in the phone-number itself.
 """
-type PhoneNumber @node(resolver: "App\\Models\\PhoneNumber@byIdWithAccess") {
+type PhoneNumber implements AccessControlled @node(resolver: "App\\Models\\PhoneNumber@byIdWithAccess")
+    @timestamps @userstamps @teamstamps @accessControl {
     id: ID! @globalId
     index: Int
     label: String
@@ -156,61 +139,36 @@ type PhoneNumber @node(resolver: "App\\Models\\PhoneNumber@byIdWithAccess") {
         """
         locale: Locale = null
     ): String @method(name: "resolveLocationAttribute")
-    created_at: DateTime
-    updated_at: DateTime
-    created_by: User @belongsTo(relation: "creator")
-    updated_by: User @belongsTo(relation: "editor")
-    my_access_level: AccessLevel @method(name: "authAccessLevel")
-    access_level(ability: String!): AccessLevel @method(name: "getAccessLevel", passOrdered: true)
-    permission_flags: [PermissionFlag] @morphMany(relation: "permissionFlags")
 }
 
-type ContactLanguage @node(resolver: "App\\Models\\ContactLanguage@byIdWithAccess") {
+type ContactLanguage implements AccessControlled @node(resolver: "App\\Models\\ContactLanguage@byIdWithAccess")
+    @timestamps @userstamps @teamstamps @accessControl {
     id: ID! @globalId
     index: Int
     label: String
     language: Language
-    created_at: DateTime
-    updated_at: DateTime
-    created_by: User @belongsTo(relation: "creator")
-    updated_by: User @belongsTo(relation: "editor")
-    my_access_level: AccessLevel @method(name: "authAccessLevel")
-    access_level(ability: String!): AccessLevel @method(name: "getAccessLevel", passOrdered: true)
-    permission_flags: [PermissionFlag] @morphMany(relation: "permissionFlags")
 }
 
-type ContactRelation @node(resolver: "App\\Models\\ContactRelation@byIdWithAccess") {
+type ContactRelation implements AccessControlled @node(resolver: "App\\Models\\ContactRelation@byIdWithAccess")
+    @timestamps @userstamps @teamstamps @accessControl {
     id: ID! @globalId
     index: Int
     label: String
     related: Contact @belongsTo(relation: "related")
-    created_at: DateTime
-    updated_at: DateTime
-    created_by: User @belongsTo(relation: "creator")
-    updated_by: User @belongsTo(relation: "editor")
-    my_access_level: AccessLevel @method(name: "authAccessLevel")
-    access_level(ability: String!): AccessLevel @method(name: "getAccessLevel", passOrdered: true)
-    permission_flags: [PermissionFlag] @morphMany(relation: "permissionFlags")
 }
 
-type RelatedContactEdge {
+type RelatedContactEdge @timestamps {
     node: Contact
+    id: String @globalIdRef(type: "ContactRelation")
     cursor: String!
     label: String
-    created_at: DateTime
-    updated_at: DateTime
-    created_by: User @belongsTo(relation: "creator")
-    updated_by: User @belongsTo(relation: "editor")
 }
 
-type RelatesToContactEdge {
+type RelatesToContactEdge @timestamps {
     node: Contact
+    id: String @globalIdRef(type: "ContactRelation")
     cursor: String!
     label: String
-    created_at: DateTime
-    updated_at: DateTime
-    created_by: User @belongsTo(relation: "creator")
-    updated_by: User @belongsTo(relation: "editor")
 }
 
 """
