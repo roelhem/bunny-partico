@@ -1,4 +1,4 @@
-type Contact @node @can(ability: "view") {
+type Contact @node(resolver: "App\\Models\\Contact@byIdWithAccess") @can(ability: "view") {
     id: ID! @globalId
     title: String
     name_parts: NameParts
@@ -47,7 +47,7 @@ type Contact @node @can(ability: "view") {
     permission_flags: [PermissionFlag] @morphMany(relation: "permissionFlags")
 }
 
-type EmailAddress @node {
+type EmailAddress @node(resolver: "App\\Models\\EmailAddress@byIdWithAccess") {
     id: ID! @globalId
     index: Int
     label: String
@@ -64,7 +64,7 @@ type EmailAddress @node {
     permission_flags: [PermissionFlag] @morphMany(relation: "permissionFlags")
 }
 
-type PostalAddress @node {
+type PostalAddress @node(resolver: "App\\Models\\PostalAddress@byIdWithAccess") {
     id: ID! @globalId
     index: Int
     label: String
@@ -115,7 +115,7 @@ The type `PhoneNumber` represents a phone-number that can be represented in seve
 different formats. Furthermore, it is possible to retrieve some extra information about
 the phone number based on patterns in the phone-number itself.
 """
-type PhoneNumber @node {
+type PhoneNumber @node(resolver: "App\\Models\\PhoneNumber@byIdWithAccess") {
     id: ID! @globalId
     index: Int
     label: String
@@ -165,7 +165,7 @@ type PhoneNumber @node {
     permission_flags: [PermissionFlag] @morphMany(relation: "permissionFlags")
 }
 
-type ContactLanguage @node {
+type ContactLanguage @node(resolver: "App\\Models\\ContactLanguage@byIdWithAccess") {
     id: ID! @globalId
     index: Int
     label: String
@@ -179,7 +179,7 @@ type ContactLanguage @node {
     permission_flags: [PermissionFlag] @morphMany(relation: "permissionFlags")
 }
 
-type ContactRelation @node {
+type ContactRelation @node(resolver: "App\\Models\\ContactRelation@byIdWithAccess") {
     id: ID! @globalId
     index: Int
     label: String

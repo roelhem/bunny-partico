@@ -1,4 +1,4 @@
-type Group @node {
+type Group @node(resolver: "App\\Models\\Group@byIdWithAccess") {
     id: ID! @globalId
     name: String
     description: String
@@ -14,7 +14,7 @@ type Group @node {
     permission_flags: [PermissionFlag] @morphMany(relation: "permissionFlags")
 }
 
-type GroupCategory @node {
+type GroupCategory @node(resolver: "App\\Models\\GroupCategory@byIdWithAccess") {
     id: ID! @globalId
     name: String
     description: String
@@ -49,5 +49,5 @@ extend type Contact {
 
 extend type Query {
     groups: [Group!] @paginate(type: "connection",  scopes: ["withViewAccess"])
-    group_categories: [GroupCategory] @paginate(type: "connection",  scopes: ["withViewAccess"])
+    group_categories: [GroupCategory!] @paginate(type: "connection",  scopes: ["withViewAccess"])
 }

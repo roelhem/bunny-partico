@@ -9,9 +9,16 @@ use App\Contracts\OwnedByContact;
 use App\Enums\AccessLevel;
 use App\Models\Contact;
 use App\Models\PermissionFlag;
+use App\Models\User;
 use Illuminate\Database\Query\Builder;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 
+/**
+ * Trait HasPermissionFlags
+ *
+ * @method static \Illuminate\Database\Eloquent\Builder where($a)
+ * @package App\Models\Traits
+ */
 trait HasPermissionFlags
 {
     /** @var int|AccessLevel|array $defaultPermissionLevels */
@@ -20,6 +27,17 @@ trait HasPermissionFlags
         'update' => AccessLevel::CREATOR_TEAM,
         'delete' => AccessLevel::CREATOR,
     ];
+
+    public static function byIdWithAccess($id)
+    {
+        /** @var static $result */
+        $result = static::where(['id' => $id])->first();
+        if($result !== null && $result->hasAccess('view', \Auth::user())) {
+            return $result;
+        } else {
+            return null;
+        }
+    }
 
     /**
      * Relation to permission flags.
@@ -92,6 +110,28 @@ trait HasPermissionFlags
             'updated_by' => \Auth::id()
         ]);
         return $this;
+    }
+
+    public function hasAccess(string $ability, ?User $user = null)
+    {
+        if($this instanceof AccessControl) {
+            return $this->getAccessLevel($ability)->hasAccess($this, $user);
+        } else {
+            $className = static::class;
+            $accessControlName = AccessControl::class;
+            throw new \Error("Class $className doesn't implement $accessControlName. Therefore, it can't determine if a user has access to this entity.");
+        }
+    }
+
+    public function getAccess(?User $user = null)
+    {
+        if($this instanceof AccessControl) {
+            return AccessLevel::getAccess($this, $user);
+        } else {
+            $className = static::class;
+            $accessControlName = AccessControl::class;
+            throw new \Error("Class $className doesn't implement $accessControlName. Therefore, it can't determine the access-level of a user.");
+        }
     }
 
     /**
