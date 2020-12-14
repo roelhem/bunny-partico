@@ -53,6 +53,52 @@ final class AccessLevel extends Enum
     }
 
     // ---------------------------------------------------------------------------------------------------------- //
+    // ----- GET LEVEL SETTINGS --------------------------------------------------------------------------------- //
+    // ---------------------------------------------------------------------------------------------------------- //
+
+    public static function getAccessConfig($model = null)
+    {
+        if(!$model) {
+            $model = null;
+        } elseif (is_object($model)) {
+            $model = get_class($model);
+        } elseif (!is_string($model)) {
+            throw new \InvalidArgumentException("Parameter \$model has to be a class name, instance or `null`.");
+        }
+
+        $defaultConfig = config('access-control.default');
+        $modelConfig = $model === null ? [] : \Arr::get(config('access-control.models'), $model, []);
+        $abilities = array_keys(array_merge($defaultConfig, $modelConfig));
+        $result = [];
+        foreach ($abilities as $ability) {
+            $defaultAbilityConfig = \Arr::get($defaultConfig, $ability, []);
+            $modelAbilityConfig = \Arr::get($modelConfig, $ability, []);
+            $level = \Arr::get($modelAbilityConfig, 'level', \Arr::get($defaultAbilityConfig, 'level', static::default()));
+            $scopes = array_merge(\Arr::get($defaultAbilityConfig, 'scopes', []), \Arr::get($modelAbilityConfig, 'scopes', []));
+            $result[$ability] = [
+                "level" => static::get($level),
+                "scopes" => $scopes,
+            ];
+        }
+        return $result;
+    }
+
+    public static function getAbilities($model = null)
+    {
+        return array_keys(static::getAccessConfig($model));
+    }
+
+    public static function getDefaultAccessLevel(string $ability, $model = null)
+    {
+        return \Arr::get(static::getAccessConfig($model), $ability.'level', static::default());
+    }
+
+    public static function getAbilityScopes(string $ability, $model = null)
+    {
+        return \Arr::get(static::getAccessConfig($model), $ability.'.scopes', static::default());
+    }
+
+    // ---------------------------------------------------------------------------------------------------------- //
     // ----- INITIALISATION ------------------------------------------------------------------------------------- //
     // ---------------------------------------------------------------------------------------------------------- //
 
@@ -103,7 +149,7 @@ final class AccessLevel extends Enum
     {
         // No filters when the access level is admin.
         if (AccessLevel::ADMIN()->is($this)) {
-            return  $query;
+            return $query;
         }
 
         // Filter all entities with an access level higher than this access level for the given ability.

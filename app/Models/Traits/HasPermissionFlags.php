@@ -21,13 +21,6 @@ use Illuminate\Database\Eloquent\Relations\MorphMany;
  */
 trait HasPermissionFlags
 {
-    /** @var int|AccessLevel|array $defaultPermissionLevels */
-    protected $defaultPermissionLevels = [
-        'view' => AccessLevel::SUBJECT,
-        'update' => AccessLevel::CREATOR_TEAM,
-        'delete' => AccessLevel::CREATOR,
-    ];
-
     public static function byIdWithAccess($id)
     {
         /** @var static $result */
@@ -57,20 +50,17 @@ trait HasPermissionFlags
      */
     public function getDefaultAccessLevel(string $ability)
     {
-        $level = null;
-        if(!is_array($this->defaultPermissionLevels)) {
-            $level = AccessLevel::get($this->defaultPermissionLevels);
-        } elseif (isset($this->defaultPermissionLevels[$ability])) {
-            \Log::info('Levels', $this->defaultPermissionLevels);
-            $level = AccessLevel::get($this->defaultPermissionLevels[$ability]);
-            \Log::info('Level', ['ability' => $ability, 'level' => $level]);
-        }
+        return AccessLevel::getDefaultAccessLevel($ability, $this);
+    }
 
-        if($level !== null) {
-            return $level;
-        } else {
-            return AccessLevel::default();
-        }
+    public function getAbilities()
+    {
+        return AccessLevel::getAbilities($this);
+    }
+
+    public function getAbilityScopes(string $ability)
+    {
+        return AccessLevel::getAbilityScopes($ability, $this);
     }
 
     /**
@@ -162,8 +152,18 @@ trait HasPermissionFlags
             });
         }
 
+        // Check the OAuth scopes of the user.
+        foreach ($this->getAbilityScopes($ability) as $scope) {
+
+            if(!\Auth::user()->tokenCan($scope)) {
+                return $query->where(function ($query) use ($ability) {
+                    return $this->scopeMaxAccessLevel($query, $ability, AccessLevel::PUBLIC());
+                });
+            }
+        }
+
         // No restrictions with admin permissions.
-        if(\Auth::user()->is_admin) {
+        if(\Auth::user()->is_admin && \Auth::user()->tokenCan('admin-access')) {
             return $query;
         }
 

@@ -11,6 +11,7 @@
             </template>
 
             <template #content>
+
                 <div v-if="personalAccessTokensLoading" class="text-gray-400">Bezig met laden van je Personal Access Tokens...</div>
                 <div v-else class="space-y-6">
                     <template v-if="personalAccessTokens.length > 0">
@@ -79,16 +80,19 @@
                         <jet-input-error :message="newPersonalAccessTokenError" class="mt-2" />
                     </div>
 
-<!--                    <template v-if="scopes.length > 0">-->
-<!--                        <div v-for="scope of scopes" :key="scope" class="col-span-6 sm:col-span-4">-->
-<!--                                <input :id="`scopes-${scope}`"-->
-<!--                                           name="scopes"-->
-<!--                                           type="checkbox"-->
-<!--                                           v-model="newPersonalAccessTokenScopes"-->
-<!--                                           :value="scope"-->
-<!--                                />-->
-<!--                        </div>-->
-<!--                    </template>-->
+                    <div class="col-span-12 sm:col-span-12 mt-2">
+                        <span class="block font-medium text-sm text-gray-700">Scopes</span>
+                        <div v-for="scope in scopes" :key="scope.id">
+                            <label class="flex items-center">
+                                <input type="checkbox"
+                                       class="form-checkbox"
+                                       :value="scope.id"
+                                       v-model="newPersonalAccessTokenScopes"
+                                />
+                                <span class="ml-2 text-sm text-gray-600">{{ scope.description }}</span>
+                            </label>
+                        </div>
+                    </div>
 
                     <pre>
                         New name: {{newPersonalAccessTokenName}}
@@ -153,9 +157,13 @@
     import JetInputError from "../../Jetstream/InputError";
     import JetDialogModal from "../../Jetstream/DialogModal";
     import moment from 'moment';
+    import Label from "@/Jetstream/Label";
+    import Input from "@/Jetstream/Input";
     export default {
         name: "PersonalAccessTokenSection",
         components: {
+            Input,
+            Label,
             JetLabel,
             FormSection,
             SectionBorder,

@@ -182,7 +182,7 @@ return [
         App\Providers\AddressingServiceProvider::class,
         App\Providers\PhoneNumberServiceProvider::class,
         App\Providers\EnumServiceProvider::class,
-
+        App\Providers\GraphQLServiceProvider::class,
     ],
 
     /*

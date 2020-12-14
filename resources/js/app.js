@@ -20,8 +20,17 @@ Vue.use(PortalVue);
 Vue.use(VueApollo);
 
 // Apollo
+
+const token = document.head.querySelector('meta[name="csrf-token"]');
 const apolloClient = new ApolloClient({
-    link: createHttpLink({ uri: '/graphql' }),
+    link: createHttpLink({
+        uri: '/graphql',
+        credentials: 'include',
+        headers: {
+            "X-CSRF-TOKEN": token.content,
+            "X-Requested-With": "XMLHttpRequest",
+        }
+    }),
     cache: new InMemoryCache(),
 });
 

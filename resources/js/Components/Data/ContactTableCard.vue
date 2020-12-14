@@ -37,7 +37,7 @@
         },
         computed: {
             contactList() {
-                const edges = this.contacts ? this.contacts.edges : []
+                const edges = this.contacts ? this.contacts.edges : [];
                 return edges.map((edge) => edge.node);
             }
         }

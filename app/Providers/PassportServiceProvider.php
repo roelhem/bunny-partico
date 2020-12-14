@@ -76,11 +76,33 @@ class PassportServiceProvider extends \Laravel\Passport\PassportServiceProvider
         parent::boot();
 
         Passport::tokensCan([
-            'openid' => 'OpenID Connect',
-            'email' => 'The e-mail address of your account.',
-            'profile' => 'Your Profile Info',
-            'address' => 'Your postal address',
-            'phone' => 'Your phone number',
+            // OPEN-ID Scopes.
+            'openid' => 'Authenticate the application with OpenID Connect',
+            'email' => 'Access the e-mail address of your account.',
+            'profile' => 'Access your profile info',
+            'address' => 'Access your postal address',
+            'phone' => 'Access your phone number',
+
+            // Admin access.
+            'admin-access' => 'Everything that you can do if you are an admin.',
+
+            // Data Scopes.
+            'view-contacts' => 'Access contact data that you can see.',
+            'view-contact-email-addresses' => 'Access the email addresses of contacts that you can see.',
+            'view-contact-phone-numbers' => 'Access the phone numbers of contacts that you can see.',
+            'view-contact-postal-addresses' => 'Access the postal addresses of contacts that you can see.',
+        ]);
+
+        Passport::setDefaultScope([
+            'email',
+            'profile',
+            'address',
+            'phone',
+            'admin-access',
+            'view-contacts',
+            'view-contact-email-addresses',
+            'view-contact-phone-numbers',
+            'view-contact-postal-addresses',
         ]);
     }
 
