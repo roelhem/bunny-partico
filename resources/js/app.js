@@ -11,6 +11,7 @@ import { InMemoryCache } from 'apollo-cache-inmemory';
 import { ApolloClient } from 'apollo-client';
 import PortalVue from 'portal-vue';
 import VueApollo from 'vue-apollo';
+import VTooltip from 'v-tooltip';
 
 // Vue
 Vue.mixin({ methods: { route } });
@@ -18,6 +19,7 @@ Vue.use(InertiaApp);
 Vue.use(InertiaForm);
 Vue.use(PortalVue);
 Vue.use(VueApollo);
+Vue.use(VTooltip);
 
 // Apollo
 
@@ -31,7 +33,9 @@ const apolloClient = new ApolloClient({
             "X-Requested-With": "XMLHttpRequest",
         }
     }),
-    cache: new InMemoryCache(),
+    connectToDevTools: true,
+    cache: new InMemoryCache({
+    }),
 });
 
 const app = document.getElementById('app');

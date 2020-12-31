@@ -51,12 +51,12 @@ scalar URL
 """
 Converts a value to the global ID that refers to a different type.
 """
-directive @globalIdRef(
-    """
-    The name of the type to which this global ID should refer.
-    """
-    type: String!
-) on FIELD_DEFINITION
+#directive @globalIdRef(
+#    """
+#    The name of the type to which this global ID should refer.
+#    """
+#    type: String!
+#) on FIELD_DEFINITION
 
 directive @timestamps on OBJECT
 directive @userstamps on OBJECT
@@ -72,6 +72,8 @@ type Query {
     """
     me: User @auth
 }
+
+
 
 #import ./permissions.graphql
 #import ./static-data.graphql

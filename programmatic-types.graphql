@@ -29,3 +29,43 @@ enum AccessLevel {
   """Admin"""
   ADMIN
 }
+enum Color {
+  """Black"""
+  BLACK
+
+  """White"""
+  WHITE
+
+  """Gray"""
+  GRAY
+
+  """Red"""
+  RED
+
+  """Orange"""
+  ORANGE
+
+  """Yellow"""
+  YELLOW
+
+  """Brown"""
+  BROWN
+
+  """Green"""
+  GREEN
+
+  """Teal"""
+  TEAL
+
+  """Blue"""
+  BLUE
+
+  """Indigo"""
+  INDIGO
+
+  """Purple"""
+  PURPLE
+
+  """Pink"""
+  PINK
+}

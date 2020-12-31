@@ -9,6 +9,9 @@ module.exports = {
     ],
 
     theme: {
+        minWidth: {
+            'label': '5.5rem',
+        },
         extend: {
             fontFamily: {
                 sans: ['Nunito', ...defaultTheme.fontFamily.sans],
@@ -20,5 +23,8 @@ module.exports = {
         opacity: ['responsive', 'hover', 'focus', 'disabled'],
     },
 
-    plugins: [require('@tailwindcss/ui')],
+    plugins: [require('@tailwindcss/ui'), require('tailwindcss-animatecss')({
+        classes: ['animate_animated', 'animate_flip'],
+        settings: {}
+    })],
 };

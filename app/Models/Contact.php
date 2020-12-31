@@ -346,6 +346,11 @@ class Contact extends Model implements AccessControl, OwnedByContact
         )->using(GroupContact::class);
     }
 
+    public function users()
+    {
+        return $this->hasMany(User::class, 'contact_id');
+    }
+
     // ---------------------------------------------------------------------------------------------------------- //
     // ----- IMPLEMENT: AccessControl --------------------------------------------------------------------------- //
     // ---------------------------------------------------------------------------------------------------------- //

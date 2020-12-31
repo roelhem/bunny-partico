@@ -29,9 +29,5 @@ Route::middleware(['auth:web','verified'])->group(function () {
         return Inertia::render('Clients/Index');
     })->name('clients.index');
 
-    Route::get('/contacts', function () {
-        return Inertia::render('Contacts/Index', [
-            'myProp' => 'Hallo!'
-        ]);
-    })->name('contacts.index');
+    Route::resource('contacts', \App\Http\Controllers\Dashboard\ContactController::class);
 });

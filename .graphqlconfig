@@ -1,12 +1,23 @@
 {
-  "extensions": {
-    "endpoints": {
-      "Default (http://partico.test/graphql)": {
-        "url": "http://partico.test/graphql",
-        "headers": {
-          "user-agent": "JS GraphQL"
+    "projects": {
+        "serverside": {
+            "includes": ["./schema-directives.graphql", "./programmatic-types.graphql", "./graphql/**"],
+            "schemaPath": "./schema-directives.graphql"
+        },
+        "client": {
+            "includes": ["resources/**"],
+            "schemaPath": "./schema.graphql",
+            "extensions": {
+                "endpoints": {
+                    "Default (http://partico.test/graphql)": {
+                        "url": "http://partico.test/graphql",
+                        "introspect": true,
+                        "headers": {
+                            "user-agent": "JS GraphQL"
+                        }
+                    }
+                }
+            }
         }
-      }
     }
-  }
 }

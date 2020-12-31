@@ -4,8 +4,10 @@ namespace App\Models;
 
 use App\Contracts\AccessControl;
 use App\Contracts\OwnedByContact;
+use App\Enums\Color;
 use App\Models\Traits\HasPermissionFlags;
 use App\Models\Traits\Teamstamps;
+use BenSampo\Enum\Traits\CastsEnums;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Wildside\Userstamps\Userstamps;
@@ -17,6 +19,15 @@ class GroupCategory extends Model implements AccessControl
     use Teamstamps;
 
     use HasPermissionFlags;
+    use CastsEnums;
+
+    // ---------------------------------------------------------------------------------------------------------- //
+    // ----- SETUP ---------------------------------------------------------------------------------------------- //
+    // ---------------------------------------------------------------------------------------------------------- //
+
+    protected $casts = [
+        'color' => Color::class,
+    ];
 
     // ---------------------------------------------------------------------------------------------------------- //
     // ----- RELATIONS ------------------------------------------------------------------------------------------ //

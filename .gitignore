@@ -17,3 +17,7 @@ _ide_helper.php
 schema-directives.graphql
 graphql.schema.json
 .phpstorm.meta.php
+schema.graphql
+programmatic-types.graphql
+_tmp
+.DS_Store

@@ -1,13 +1,20 @@
 <template>
-    <div>
+    <div class="bg-white overflow-hidden shadow-lg sm:rounded-lg">
         <table>
             <thead>
-                <tr>
-                    <th>Contacts</th>
-                </tr>
+            <tr>
+                <th>Name</th>
+            </tr>
             </thead>
             <tbody>
-                <contact-table-row v-for="contact in contactList" :key="contact.id" :contact="contact" />
+            <template v-if="contacts && contacts.edges">
+                <tr v-for="edge in contacts.edges">
+                    <td>
+                        {{edge.node.name}}
+                        <span v-if="edge.node.nickname" class="text-gray-500">({{edge.node.nickname}})</span>
+                    </td>
+                </tr>
+            </template>
             </tbody>
         </table>
     </div>
@@ -16,31 +23,33 @@
 <script>
     import gql from 'graphql-tag';
     import ContactTableRow from "@/Components/Data/ContactTableRow";
+    import ConnectionTable from "@/Components/Data/ConnectionTable";
+    import ConnectionTableCard from "@/Components/Data/ConnectionTableCard";
 
     export default {
         name: "ContactTableCard",
-        components: {ContactTableRow},
+        components: {ConnectionTableCard, ContactTableRow, ConnectionTable},
+        data() {
+            return {
+                contacts: {
+                    edges: []
+                }
+            };
+        },
         apollo: {
             contacts: gql`
             query ContactTableCard {
-               contacts {
-                edges {
-                  node {
-                    ...ContactTableRow
-                  }
+                contacts {
+                    edges {
+                        node {
+                            name
+                            nickname
+                        }
+                    }
                 }
-              }
             }
-
-            ${ContactTableRow.fragment}
 `
         },
-        computed: {
-            contactList() {
-                const edges = this.contacts ? this.contacts.edges : [];
-                return edges.map((edge) => edge.node);
-            }
-        }
     }
 </script>
 
