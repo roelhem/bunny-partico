@@ -7,6 +7,34 @@
         </template>
 
         <div class="py-12">
+            <div class="max-w-7xl mx-auto">
+                <postal-address-input v-model="address" />
+                <pre class="text-orange-600">{{ address }}</pre>
+            </div>
+        </div>
+
+        <div class="py-12">
+            <div class="max-w-7xl mx-auto">
+                <language-select v-model="language" />
+                <pre>{{ language }}</pre>
+            </div>
+        </div>
+
+        <div class="py-12">
+            <div class="max-w-7xl mx-auto">
+                <country-select v-model="country" />
+                <pre>{{ country }}</pre>
+            </div>
+        </div>
+
+        <div class="py-12">
+            <div class="max-w-7xl mx-auto">
+                <contact-select v-model="contact" />
+                <pre>{{ contact }}</pre>
+            </div>
+        </div>
+
+        <div class="py-12">
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
                 <div class="space-y-1 space-x-1" v-for="color in colors">
                     <template v-for="light in [true, false]">
@@ -46,12 +74,29 @@
     import Welcome from '@/Jetstream/Welcome'
     import Tag, {sizes} from "@/Components/Tag";
     import {COLORS} from "@/utils/colors";
+    import LanguageSelect from "@/Components/Forms/LanguageSelect";
+    import CountrySelect from "@/Components/Forms/CountrySelect";
+    import ContactSelect from "@/Components/Forms/ContactSelect";
+    import PostalAddressInput from "@/Components/Forms/PostalAddressInput";
 
     export default {
         components: {
+            PostalAddressInput,
+            ContactSelect,
+            LanguageSelect,
+            CountrySelect,
             Tag,
             AppLayout,
             Welcome,
+        },
+        data() {
+            return {
+                address: null,
+                language: null,
+                country: null,
+                group: null,
+                contact: null,
+            }
         },
         computed: {
             colors() {

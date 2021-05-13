@@ -6,6 +6,7 @@ namespace App\Models;
 
 use App\Contracts\AccessControl;
 use App\Contracts\OwnedByContact;
+use App\Enums\AddressField;
 use App\Models\Traits\AddressingAttributeMappings;
 use App\Models\Traits\BelongsToContact;
 use App\Models\Traits\HasCountryCode;
@@ -158,31 +159,13 @@ class PostalAddress extends Model implements AddressInterface, AccessControl, Ow
         static::saving(function(PostalAddress $personAddress) {
             $addressFormat = $personAddress->addressFormat;
             $usedFields = $addressFormat->getUsedFields();
-            foreach (self::addressFieldAttributeNames() as $attributeName) {
-                if($attributeName === 'organisation') {
-                    $fieldName = 'organization';
-                } else {
-                    $fieldName = \Str::camel($attributeName);
-                }
-
-                if(!in_array($fieldName, $usedFields)) {
-                    $personAddress->$attributeName = null;
-                }
-            }
+//            foreach (AddressField::getInstances() as $field) {
+//                if(!in_array($field->value, $usedFields)) {
+//                    $personAddress->{$field->getDatabaseField()} = null;
+//                }
+//            }
         });
 
         parent::boot();
-    }
-
-    /**
-     * Returns the names of the attributes that store the address values.
-     *
-     * @return array
-     */
-    public static function addressFieldAttributeNames() {
-        return [
-            'administrative_area','locality','dependent_locality','postal_code','sorting_code',
-            'address_line_1','address_line_2','organisation'
-        ];
     }
 }

@@ -12,6 +12,8 @@ import { ApolloClient } from 'apollo-client';
 import PortalVue from 'portal-vue';
 import VueApollo from 'vue-apollo';
 import VTooltip from 'v-tooltip';
+import VSelect from 'vue-select';
+import 'vue-select/dist/vue-select.css';
 
 // Vue
 Vue.mixin({ methods: { route } });
@@ -20,6 +22,7 @@ Vue.use(InertiaForm);
 Vue.use(PortalVue);
 Vue.use(VueApollo);
 Vue.use(VTooltip);
+Vue.component('v-select', VSelect);
 
 // Apollo
 

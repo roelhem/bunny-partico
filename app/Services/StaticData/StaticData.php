@@ -4,6 +4,7 @@
 namespace App\Services\StaticData;
 
 
+use CommerceGuys\Addressing\AddressFormat\AddressFormat;
 use CommerceGuys\Addressing\AddressFormat\AddressFormatRepositoryInterface;
 use CommerceGuys\Addressing\Country\CountryRepositoryInterface;
 use CommerceGuys\Addressing\Subdivision\SubdivisionRepositoryInterface;
@@ -35,6 +36,34 @@ class StaticData
         /** @var AddressFormatRepositoryInterface $repository */
         $repository = resolve(AddressFormatRepositoryInterface::class);
         return $repository->getAll();
+    }
+
+    public function getAddressLocalityTypes() {
+        $formats = collect($this->getAddressFormats());
+        return $formats->map(function (AddressFormat $format) {
+            return $format->getLocalityType();
+        })->unique();
+    }
+
+    public function getAddressDependentLocalityTypes() {
+        $formats = collect($this->getAddressFormats());
+        return $formats->map(function (AddressFormat $format) {
+            return $format->getDependentLocalityType();
+        })->unique();
+    }
+
+    public function getAddressAdministrativeAreaTypes() {
+        $formats = collect($this->getAddressFormats());
+        return $formats->map(function (AddressFormat $format) {
+            return $format->getAdministrativeAreaType();
+        })->unique();
+    }
+
+    public function getAddressPostalCodeTypes() {
+        $formats = collect($this->getAddressFormats());
+        return $formats->map(function (AddressFormat $format) {
+            return $format->getPostalCodeType();
+        })->unique();
     }
 
     public function getSubdivision(string $subdivisionCode, array $parents) {

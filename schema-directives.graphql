@@ -6,9 +6,47 @@
 # Add a proper definition by implementing Nuwave\Lighthouse\Support\Contracts\DefinedDirective
 directive @accessControl
 
+# Directive class: App\GraphQL\Directives\CollectionPaginateDirective
+"""
+Query multiple entries in a Laravel collection
+"""
+directive @collectionPaginate(
+  """
+  Which pagination style to use.
+  Allowed values: `paginator`, `connection`.
+  """
+  type: String = "paginator"
+
+  """
+  Allow clients to query paginated lists without specifying the amount of items.
+  Overrules the `pagination.default_count` setting from `lighthouse.php`.
+  """
+  defaultCount: Int
+
+  """
+  Limit the maximum amount of items that clients can request from paginated lists.
+  Overrules the `pagination.max_count` setting from `lighthouse.php`.
+  """
+  maxCount: Int
+) on FIELD_DEFINITION
+
 # Directive class: App\GraphQL\Directives\CountryDirective
 # Add a proper definition by implementing Nuwave\Lighthouse\Support\Contracts\DefinedDirective
 directive @country
+
+# Directive class: App\GraphQL\Directives\GeneralNodeDirective
+"""
+Register a type for Relay's global object identification.
+When used without any arguments.
+"""
+directive @generalNode(
+  """
+  Reference to resolver function.
+  Consists of two parts: a class name and a method name, seperated by an `@` symbol.
+  If you pass only a class name, the method name defaults to `__invoke`.
+  """
+  resolver: String
+) on FIELD_DEFINITION
 
 # Directive class: App\GraphQL\Directives\GlobalIdRefDirective
 # Add a proper definition by implementing Nuwave\Lighthouse\Support\Contracts\DefinedDirective

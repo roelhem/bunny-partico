@@ -23,7 +23,7 @@
             </div>
             <div>
                 <label>
-                    Label
+                    Remarks
                     <textarea v-model="editForm.remarks" class="form-input rounded-md shadow-sm" />
                 </label>
             </div>

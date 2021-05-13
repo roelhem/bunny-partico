@@ -1,4 +1,5 @@
-type Country {
+type Country @generalNode(resolver: "App\\GraphQL\\Types\\CountryType") {
+    id: ID! @globalId @field(resolver: "App\\GraphQL\\Types\\CountryType@resolveCountryCode")
     name(
         """
         The locale in which you want to display the name of this country.
@@ -13,21 +14,30 @@ type Country {
     phone_number_meta: PhoneNumberMeta @field(resolver: "App\\GraphQL\\Types\\CountryType@resolvePhoneNumberFormat")
 }
 
-type AddressFormat {
-    country: Country @method(name: "getCountryCode")
-    format: String @method(name: "getFormat")
-    local_format: String @method(name: "getLocalFormat")
-    used_fields: [String!] @method(name: "getUsedFields")
-    required_fields: [String!] @method(name: "getRequiredFields")
-    uppercase_fields: [String!] @method(name: "getUppercaseFields")
-    used_subdivisions: [String!] @method(name: "getUsedSubdivisionFields")
-    administrative_area_type: String @method(name: "getAdministrativeAreaType")
-    locality_type: String @method(name: "getLocalityType")
-    dependent_locality_type: String @method(name: "getDependentLocalityType")
-    postal_code_type: String @method(name: "getPostalCodeType")
-    postal_code_pattern: String @method(name: "getPostalCodePattern")
+type AddressFormat @generalNode(resolver: "App\\GraphQL\\Types\\AddressFormatType") {
+    id: ID! @globalId @field(resolver: "App\\GraphQL\\Types\\AddressFormatType@resolveCountryCode")
+    country: Country @field(resolver: "App\\GraphQL\\Types\\AddressFormatType@resolveCountry")
+    format(
+        """
+        Include the name in the address format.
+        """
+        withName: Boolean = false
+        """
+        Show the address fromat for local sending.
+        """
+        local: Boolean = false
+    ): [[AddressField!]!] @field(resolver: "App\\GraphQL\\Types\\AddressFormatType@resolveFormat")
+    used_fields: [AddressField!] @method(name: "getUsedFields")
+    required_fields: [AddressField!] @method(name: "getRequiredFields")
+    uppercase_fields: [AddressField!] @method(name: "getUppercaseFields")
+    used_subdivisions: [AddressField!] @method(name: "getUsedSubdivisionFields")
+    administrative_area_type: AddressAdministrativeAreaType @method(name: "getAdministrativeAreaType")
+    locality_type: AddressLocalityType @method(name: "getLocalityType")
+    dependent_locality_type: AddressDependentLocalityType @method(name: "getDependentLocalityType")
+    postal_code_type: AddressPostalCodeType @method(name: "getPostalCodeType")
+    postal_code_pattern: Regex @method(name: "getPostalCodePattern")
     postal_code_prefix: String @method(name: "getPostalCodePrefix")
-    subdivision_depth: String @method(name: "getSubdivisionDepth")
+    subdivision_depth: Int @method(name: "getSubdivisionDepth")
 }
 
 enum PhoneNumberFormat {
@@ -130,7 +140,8 @@ type PhoneNumberFormatDescription {
     domestic_carrier_code: String @method(name: "getDomesticCarrierCodeFormattingRule")
 }
 
-type Language {
+type Language @generalNode(resolver: "App\\GraphQL\\Types\\LanguageType") {
+    id: ID! @globalId @field(resolver: "App\\GraphQL\\Types\\LanguageType@resolveCode")
     name(
         """
         The locale in which you want to display the name of this country.
@@ -141,16 +152,17 @@ type Language {
 }
 
 extend type Query {
+    addressFormats: [AddressFormat!]! @collectionPaginate(type: "connection")
     countries(
         """
         The locale in which you want to see the country name.
         """
         locale: Locale = null
-    ): [Country!]!
+    ): [Country!]! @collectionPaginate(type: "connection")
     languages(
         """
         The locale in which you want to see the language name.
         """
         locale: Locale = null
-    ): [Language!]!
+    ): [Language!]! @collectionPaginate(type: "connection")
 }

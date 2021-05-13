@@ -26,6 +26,7 @@
         "resolve-url-loader": "^3.1.0",
         "tailwindcss": "^1.8.0",
         "vue": "^2.5.17",
+        "vue-svg-loader": "^0.16.0",
         "vue-template-compiler": "^2.6.10"
     },
     "dependencies": {
@@ -42,6 +43,7 @@
         "v-tooltip": "^2.0.3",
         "vue-apollo": "^3.0.5",
         "vue-country-flag": "^2.0.2",
+        "vue-select": "^3.11.2",
         "vuedraggable": "^2.24.3"
     }
 }

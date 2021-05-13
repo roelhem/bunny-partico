@@ -21,6 +21,11 @@ class LanguageType
         }
     }
 
+    public function __invoke($input)
+    {
+        return $this->getLanguageInstance($input);
+    }
+
     public function resolveName($input, array $args)
     {
         return $this->getLanguageInstance($input, $args['locale'])->getName();

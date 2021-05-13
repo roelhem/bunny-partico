@@ -27,6 +27,11 @@ class CountryType
         }
     }
 
+    public function __invoke($input)
+    {
+        return $this->getCountryInstance($input);
+    }
+
     public function resolveName($root, array $args)
     {
         return $this->getCountryInstance($root, $args['locale'])->getName();

@@ -9,7 +9,7 @@
                       :size="size"
                       :rounded="rounded"
         />
-        <span v-if="showName" class="text-gray-700">{{ countryName }}</span>
+        <span v-if="showName" :class="nameClass">{{ countryName }}</span>
     </span>
 </template>
 
@@ -24,6 +24,9 @@
             country: {
                 required: true,
                 type: [String, Object],
+            },
+            nameClass: {
+                default: () => ['text-gray-700'],
             },
             size: {
                 type: String,

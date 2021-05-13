@@ -37,6 +37,10 @@ class StaticDataServiceProvider extends ServiceProvider
         // \Validator::extend('before_or_equal_fields', 'App\Services\Validators\DateTimeValidator@validateBeforeOrEqualFields');
         // \Validator::extend('after_fields', 'App\Services\Validators\DateTimeValidator@validateAfterFields');
         // \Validator::extend('after_or_equal_fields', 'App\Services\Validators\DateTimeValidator@validateAfterOrEqualFields');
+        \Validator::extend('language_code', function ($attribute, $value, $parameters) {
+            $repository = app(LanguageRepositoryInterface::class);
+            return $repository->has($value);
+        });
     }
 
     /**

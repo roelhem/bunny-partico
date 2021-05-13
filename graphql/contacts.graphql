@@ -220,6 +220,9 @@ extend type Query {
 
 type Mutation {
     updateEmailAddress(input: UpdateEmailAddressInput! @spread): EmailAddress @update(globalId: true)
+    updateContactLanguage(input: UpdateContactLanguageInput! @spread): ContactLanguage @update(globalId: true)
+    updateContactRelation(input: UpdateContactRelationInput! @spread): ContactRelation @update(globalId: true)
+    updatePostalAddress(input: UpdatePostalAddressInput! @spread): PostalAddress @update(globalId: true)
 }
 
 input CreateContactInput {
@@ -242,5 +245,42 @@ input UpdateEmailAddressInput {
     id: ID! @globalId(decode: "ID")
     label: String @trim @rules(apply:["max:63"])
     email_address: String @trim @rules(apply: ["email"])
+    remarks: String
+}
+
+input UpdateContactLanguageInput {
+    id: ID! @globalId(decode: "ID")
+    label: String @trim @rules(apply: ["max:63"])
+    language_code: Locale @trim @rules(apply: ["language_code"])
+    remarks: String
+}
+
+input UpdatePostalAddressInput {
+    id: ID! @globalId(decode: "ID")
+    label: String @trim @rules(apply: ["max:63"])
+    country_code: CountryCode
+    administrative_area: String
+    locality: String
+    dependent_locality: String
+    postal_code: String
+    sorting_code: String
+    address_line_1: String
+    address_line_2: String
+    organisation: String
+    remarks: String
+}
+
+input UpdatePhoneNumberInput {
+    id: ID! @globalId(decode: "ID")
+    label: String @trim @rules(apply: ["max:63"])
+    phone_number: String
+    country_code: CountryCode
+    remarks: String
+}
+
+input UpdateContactRelationInput {
+    id: ID! @globalId(decode: "ID")
+    label: String @trim @rules(apply: ["max:63"])
+    related_contact_id: ID @globalId(decode: "ID")
     remarks: String
 }

@@ -69,3 +69,116 @@ enum Color {
   """Pink"""
   PINK
 }
+enum AddressField {
+  """A d d r e s s  l i n e 1"""
+  ADDRESS_LINE_1
+
+  """A d d r e s s  l i n e 2"""
+  ADDRESS_LINE_2
+
+  """Administrative area"""
+  ADMINISTRATIVE_AREA
+
+  """Locality"""
+  LOCALITY
+
+  """Dependent locality"""
+  DEPENDENT_LOCALITY
+
+  """Postal code"""
+  POSTAL_CODE
+
+  """Sorting code"""
+  SORTING_CODE
+
+  """Organisation"""
+  ORGANISATION
+
+  """Given name"""
+  GIVEN_NAME
+
+  """Additional name"""
+  ADDITIONAL_NAME
+
+  """Family name"""
+  FAMILY_NAME
+}
+enum AddressLocalityType {
+  """City"""
+  CITY
+
+  """Suburb"""
+  SUBURB
+
+  """Post town"""
+  POST_TOWN
+
+  """District"""
+  DISTRICT
+}
+enum AddressDependentLocalityType {
+  """Neighborhood"""
+  NEIGHBORHOOD
+
+  """District"""
+  DISTRICT
+
+  """Townland"""
+  TOWNLAND
+
+  """Village township"""
+  VILLAGE_TOWNSHIP
+
+  """Suburb"""
+  SUBURB
+}
+enum AddressAdministrativeAreaType {
+  """Emirate"""
+  EMIRATE
+
+  """Province"""
+  PROVINCE
+
+  """State"""
+  STATE
+
+  """Parish"""
+  PARISH
+
+  """Island"""
+  ISLAND
+
+  """Department"""
+  DEPARTMENT
+
+  """County"""
+  COUNTY
+
+  """Area"""
+  AREA
+
+  """Prefecture"""
+  PREFECTURE
+
+  """Do si"""
+  DO_SI
+
+  """District"""
+  DISTRICT
+
+  """Oblast"""
+  OBLAST
+}
+enum AddressPostalCodeType {
+  """Postal"""
+  POSTAL
+
+  """Zip"""
+  ZIP
+
+  """Eircode"""
+  EIRCODE
+
+  """Pin"""
+  PIN
+}
